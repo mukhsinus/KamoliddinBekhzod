@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, Globe, Users, Award, Palette, Clock } from 'lucide-react';
-import heroBg from '@/assets/hero-bg.jpg';
+import heroBg from '@/assets/hero-bg.webp';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
