@@ -13,6 +13,7 @@ import FAQ from "./pages/FAQ";
 import Biography from "./pages/Biography";
 import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="/biography" element={<Biography />} />
               <Route path="/contacts" element={<Contacts />} />
             </Route>
+            <Route path="/auth" element={<Auth />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={
