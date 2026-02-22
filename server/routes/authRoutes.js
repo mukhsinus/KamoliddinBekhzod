@@ -1,4 +1,13 @@
+
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+const authMiddleware = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
+
+const router = express.Router();
+
 // Avatar upload
 router.put('/avatar', authMiddleware, upload.single('avatar'), async (req, res) => {
   try {
@@ -14,13 +23,6 @@ router.put('/avatar', authMiddleware, upload.single('avatar'), async (req, res) 
     res.status(500).json({ error: err.message });
   }
 });
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const authMiddleware = require('../middleware/authMiddleware');
-
-const router = express.Router();
 
 // Register
 router.post('/register', async (req, res) => {
