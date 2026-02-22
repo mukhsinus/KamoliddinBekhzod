@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+import api from '../services/api';
 
 export default function Register() {
   const [firstName, setFirstName] = useState('');
@@ -16,8 +14,10 @@ export default function Register() {
     e.preventDefault();
     setError('');
     try {
-      const res = await axios.post(`${API}/api/auth/register`, { firstName, lastName, email, password });
-      localStorage.setItem('token', res.data.token);
+      const res = await api.post('/api/auth/register', { firstName, lastName, email, password });
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+      }
       navigate('/profile');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Registration failed');

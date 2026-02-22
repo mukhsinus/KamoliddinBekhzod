@@ -36,6 +36,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/diplomas', diplomaRoutes);
 
+
+
+app.get('/test', (req, res) => {
+  res.send('server works');
+});
+
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });

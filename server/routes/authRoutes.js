@@ -1,4 +1,3 @@
-
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -8,26 +7,12 @@ const upload = require('../middleware/uploadMiddleware');
 
 const router = express.Router();
 
-// Avatar upload
-router.put('/avatar', authMiddleware, upload.single('avatar'), async (req, res) => {
-  try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded.' });
-    const user = await User.findById(req.user.userId);
-    if (!user) return res.status(404).json({ error: 'User not found.' });
-    user.avatar = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-    await user.save();
-    const userObj = user.toObject();
-    delete userObj.password;
-    res.json(userObj);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Register
+/* =========================
+   REGISTER
+========================= */
 router.post('/register', async (req, res) => {
   try {
-    const { firstName, lastName, email, password, avatar } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
     if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({ error: 'All fields are required.' });
@@ -45,7 +30,7 @@ router.post('/register', async (req, res) => {
       lastName,
       email,
       password: hashedPassword,
-      avatar: avatar || '/default-avatar.png'
+      avatar: '/default-avatar.png'
     });
 
     const token = jwt.sign(
@@ -60,7 +45,9 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login
+/* =========================
+   LOGIN
+========================= */
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -87,18 +74,83 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Get current user
+/* =========================
+   GET CURRENT USER
+========================= */
 router.get('/me', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select('-password');
-    if (!user) return res.status(404).json({ error: 'User not found.' });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
     res.json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Change password
+/* =========================
+   UPDATE PROFILE
+========================= */
+router.put('/me', authMiddleware, async (req, res) => {
+  try {
+    const allowedFields = ['firstName', 'lastName', 'age', 'city', 'phone'];
+    const updates = {};
+
+    allowedFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    });
+
+    const user = await User.findByIdAndUpdate(
+      req.user.userId,
+      { $set: updates },
+      { new: true }
+    ).select('-password');
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* =========================
+   AVATAR UPLOAD
+========================= */
+router.put(
+  '/avatar',
+  authMiddleware,
+  upload.single('avatar'),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded.' });
+      }
+
+      const user = await User.findById(req.user.userId);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found.' });
+      }
+
+      user.avatar = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      await user.save();
+
+      const userObj = user.toObject();
+      delete userObj.password;
+
+      res.json(userObj);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+
+/* =========================
+   CHANGE PASSWORD
+========================= */
 router.put('/change-password', authMiddleware, async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmNewPassword } = req.body;
@@ -112,7 +164,9 @@ router.put('/change-password', authMiddleware, async (req, res) => {
     }
 
     const user = await User.findById(req.user.userId);
-    if (!user) return res.status(404).json({ error: 'User not found.' });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
