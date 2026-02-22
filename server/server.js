@@ -1,3 +1,6 @@
+const path = require('path');
+// Serve uploads folder
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // server/server.js
 require('dotenv').config();
 
@@ -28,9 +31,11 @@ app.use(express.json());
 // =======================
 const authRoutes = require('./routes/authRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
+const diplomaRoutes = require('./routes/diplomaRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/applications', applicationRoutes);
+app.use('/api/diplomas', diplomaRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
