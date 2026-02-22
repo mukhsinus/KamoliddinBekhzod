@@ -27,7 +27,8 @@ const Header = () => {
     { to: '/faq', label: t('nav.faq') },
     { to: '/biography', label: t('nav.biography') },
     { to: '/contacts', label: t('nav.contacts') },
-    { to: '/auth', label: 'Login / Sign Up' },
+    { to: '/login', label: 'Login' },
+    { to: '/register', label: 'Sign Up' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
