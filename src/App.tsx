@@ -13,6 +13,8 @@ import FAQ from "./pages/FAQ";
 import Biography from "./pages/Biography";
 import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
+import AuthPage from "./pages/Auth";
+import ProfilePage from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,8 @@ const App = () => (
               <Route path="/biography" element={<Biography />} />
               <Route path="/contacts" element={<Contacts />} />
             </Route>
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
