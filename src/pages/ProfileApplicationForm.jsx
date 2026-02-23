@@ -9,6 +9,7 @@ export default function ProfileApplicationForm() {
     driveLink: '',
     works: []
   });
+  const [nominations, setNominations] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -24,6 +25,18 @@ export default function ProfileApplicationForm() {
       setForm(f => ({ ...f, nomination }));
     }
   }, []);
+  
+  useEffect(() => {
+    const fetchNominations = async () => {
+      try {
+        const res = await api.get('/api/nominations');
+        setNominations(res.data);
+      } catch (err) {
+        console.error('Failed to load nominations', err);
+      }
+    };
+    fetchNominations();
+  }, []);
 
   const validate = () => {
     if (!form.fullName || form.fullName.length < 5) return false;
@@ -32,8 +45,6 @@ export default function ProfileApplicationForm() {
     if (!form.nomination) return false;
     if (!form.works.length) return false;
     return true;
-  const [nominations, setNominations] = useState([]);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   };
 
   const handleFileChange = e => {
@@ -160,22 +171,49 @@ export default function ProfileApplicationForm() {
           </label>
         </div>
         <div className="relative">
-          <select
-            name="nomination"
-            value={form.nomination}
-            onChange={handleChange}
-            className="peer appearance-none w-full border-b border-gray-300 bg-transparent pt-6 pb-2 text-lg focus:outline-none focus:border-black"
-            required
-          >
-            <option value="" disabled>Select a nomination</option>
-            {/* Dynamically render nominations if available */}
-          </select>
-          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" /></svg>
-          </div>
-          <label className="absolute left-0 top-2 text-xs uppercase tracking-widest text-gray-400 transition-all duration-200 peer-placeholder-shown:top-6 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:text-xs peer-focus:text-black">
-            NOMINATION
-          </label>
+        <select
+        name="nomination"
+        value={form.nomination}
+        onChange={handleChange}
+        required
+        className="
+            peer w-full
+            border-b border-gray-300
+            bg-transparent
+            pt-6 pb-2
+            text-lg
+            leading-[1.25]
+            h-[44px]
+            focus:outline-none
+            focus:border-black
+            appearance-none
+        "
+        >
+            <option value="" hidden></option>
+            {nominations?.map(n => (
+            <option key={n._id} value={n.slug}>
+                {n.title}
+            </option>
+            ))}
+        </select>
+
+        <label
+        className="
+            absolute left-0
+            text-xs uppercase tracking-widest
+            text-gray-400
+            transition-all duration-200
+            top-3
+            peer-focus:top-3
+            peer-focus:text-xs
+            peer-focus:text-black
+        "
+        >
+        NOMINATION
+        </label>
+
+        <div className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-gray-500">
+        </div>
         </div>
         <div
           className="border border-dashed border-gray-400 rounded-lg p-4 flex flex-col items-center justify-center bg-gray-50 cursor-pointer"
