@@ -28,13 +28,20 @@ app.use(express.json());
 // =======================
 // ROUTES
 // =======================
+
 const authRoutes = require('./routes/authRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
 const diplomaRoutes = require('./routes/diplomaRoutes');
 
+const nominationRoutes = require('./routes/nominations');
+const submissionRoutes = require('./routes/submissionRoutes');
+
+
 app.use('/api/auth', authRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/diplomas', diplomaRoutes);
+app.use('/api/submissions', submissionRoutes);
+app.use('/api/nominations', nominationRoutes);
 
 
 

@@ -1,3 +1,4 @@
+// Auth routes for registration, login, profile management, and avatar upload
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');

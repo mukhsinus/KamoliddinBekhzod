@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import api from '../services/api';
+import ProfileApplicationForm from './ProfileApplicationForm';
 
 type Tab = 'profile' | 'applications' | 'diplomas';
 
@@ -171,25 +172,7 @@ export default function Profile() {
         </div>
       )}
       {tab === 'applications' && (
-        <div>
-          <h3 className="font-bold mb-2">Submit Application</h3>
-          <input value={appForm.fullName} onChange={e => setAppForm(prev => ({ ...prev, fullName: e.target.value }))} placeholder="Full Name" className="mb-2 w-full border rounded px-2 py-1" />
-          <input value={appForm.education} onChange={e => setAppForm(prev => ({ ...prev, education: e.target.value }))} placeholder="Education" className="mb-2 w-full border rounded px-2 py-1" />
-          <input value={appForm.driveLink} onChange={e => setAppForm(prev => ({ ...prev, driveLink: e.target.value }))} placeholder="Google Drive Link" className="mb-2 w-full border rounded px-2 py-1" />
-          <input value={appForm.modelParams} onChange={e => setAppForm(prev => ({ ...prev, modelParams: e.target.value }))} placeholder="Model Parameters" className="mb-2 w-full border rounded px-2 py-1" />
-          <input value={appForm.category} onChange={e => setAppForm(prev => ({ ...prev, category: e.target.value }))} placeholder="Category" className="mb-2 w-full border rounded px-2 py-1" />
-          <input value={appForm.photos.join(',')} onChange={e => setAppForm(prev => ({ ...prev, photos: e.target.value.split(',') }))} placeholder="Photos (comma separated URLs)" className="mb-2 w-full border rounded px-2 py-1" />
-          <button className="border px-4 py-2 rounded mb-4" onClick={handleAppSubmit}>Submit</button>
-          <h3 className="font-bold mt-6 mb-2">My Applications</h3>
-          <div>
-            <b>Active:</b>
-            {apps.filter(a => a.status === 'approved').map(a => <div key={a._id}>{a.fullName} ({a.category})</div>)}
-            <b>Pending:</b>
-            {apps.filter(a => a.status === 'pending').map(a => <div key={a._id}>{a.fullName} ({a.category})</div>)}
-            <b>Rejected:</b>
-            {apps.filter(a => a.status === 'rejected').map(a => <div key={a._id}>{a.fullName} ({a.category})</div>)}
-          </div>
-        </div>
+        <ProfileApplicationForm />
       )}
       {tab === 'diplomas' && (
         <div>
