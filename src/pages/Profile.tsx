@@ -1,4 +1,3 @@
-// Profile.tsx
 import { useEffect, useState, useRef } from 'react';
 import api from '../services/api';
 import ProfileApplicationForm from './ProfileApplicationForm';
@@ -24,9 +23,9 @@ export default function Profile() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // --------------------------------------------
-  // DATA LOADING
-  // --------------------------------------------
+  // ------------------------------
+  // LOAD DATA
+  // ------------------------------
 
   useEffect(() => {
     async function load() {
@@ -51,9 +50,9 @@ export default function Profile() {
     load();
   }, []);
 
-  // --------------------------------------------
+  // ------------------------------
   // SAVE PROFILE
-  // --------------------------------------------
+  // ------------------------------
 
   const handleProfileSave = async () => {
     setError('');
@@ -71,8 +70,13 @@ export default function Profile() {
       }
 
       const res = await api.put('/api/auth/me', {
-        ...form,
-        avatar: avatarUrl,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        age: form.age,
+        city: form.city,
+        phone: form.phone,
+        email: form.email,
+        avatar: avatarUrl
       });
 
       setUser(res.data);
@@ -80,6 +84,7 @@ export default function Profile() {
       setSuccess('Профиль успешно обновлён');
       setEdit(false);
       setAvatarFile(null);
+
     } catch (err: any) {
       setError(err.response?.data?.error || 'Ошибка сохранения');
     } finally {
@@ -87,9 +92,9 @@ export default function Profile() {
     }
   };
 
-  // --------------------------------------------
-  // LOADING STATE
-  // --------------------------------------------
+  // ------------------------------
+  // LOADING
+  // ------------------------------
 
   if (loadingUser) {
     return (
@@ -118,13 +123,11 @@ export default function Profile() {
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`
-                relative px-6 py-3 rounded-full transition
-                ${tab === t
+              className={`px-6 py-3 rounded-full transition ${
+                tab === t
                   ? 'bg-[#1f2f57] text-white shadow'
                   : 'bg-white border border-gray-300 hover:bg-gray-100'
-                }
-              `}
+              }`}
             >
               {t === 'profile' && 'Профиль'}
               {t === 'applications' && 'Мои заявки'}
@@ -138,7 +141,7 @@ export default function Profile() {
 
         {/* PROFILE TAB */}
         {tab === 'profile' && (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-10 transition">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-10">
 
             {/* AVATAR */}
             <div className="flex flex-col items-center mb-12">
@@ -177,20 +180,19 @@ export default function Profile() {
               Личная информация
             </h3>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            {/* PERSONAL INFO */}
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
               {['firstName','lastName','age','city'].map(field => (
                 <input
                   key={field}
                   value={form?.[field] || ''}
                   disabled={!edit}
                   onChange={e => setForm((prev:any)=>({...prev, [field]:e.target.value}))}
-                  className={`
-                    px-4 py-3 rounded-lg border transition
-                    ${edit
+                  className={`px-4 py-3 rounded-lg border transition ${
+                    edit
                       ? 'bg-white border-gray-300 focus:ring-2 focus:ring-[#1f2f57]'
                       : 'bg-gray-100 border-gray-200'
-                    }
-                  `}
+                  }`}
                   placeholder={
                     field === 'firstName' ? 'Имя' :
                     field === 'lastName' ? 'Фамилия' :
@@ -201,7 +203,37 @@ export default function Profile() {
               ))}
             </div>
 
-            <div className="flex justify-center mt-10">
+            {/* CONTACT INFO */}
+            <h3 className="text-xl font-serif mb-6">Контактные данные</h3>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <input
+                value={form?.email || ''}
+                disabled={!edit}
+                onChange={e => setForm((prev:any)=>({...prev, email:e.target.value}))}
+                className={`px-4 py-3 rounded-lg border transition ${
+                  edit
+                    ? 'bg-white border-gray-300 focus:ring-2 focus:ring-[#1f2f57]'
+                    : 'bg-gray-100 border-gray-200'
+                }`}
+                placeholder="Email"
+              />
+
+              <input
+                value={form?.phone || ''}
+                disabled={!edit}
+                onChange={e => setForm((prev:any)=>({...prev, phone:e.target.value}))}
+                className={`px-4 py-3 rounded-lg border transition ${
+                  edit
+                    ? 'bg-white border-gray-300 focus:ring-2 focus:ring-[#1f2f57]'
+                    : 'bg-gray-100 border-gray-200'
+                }`}
+                placeholder="Телефон"
+              />
+            </div>
+
+            {/* SAVE BUTTON */}
+            <div className="flex justify-center mt-6">
               <button
                 onClick={() => edit ? handleProfileSave() : setEdit(true)}
                 disabled={saving}
@@ -210,6 +242,10 @@ export default function Profile() {
                 {saving ? 'Сохранение...' : (edit ? 'Сохранить изменения' : 'Редактировать профиль')}
               </button>
             </div>
+
+            {/* PASSWORD SECTION */}
+            <PasswordChangeSection />
+
           </div>
         )}
 
@@ -230,6 +266,87 @@ export default function Profile() {
         )}
 
       </div>
+    </div>
+  );
+}
+
+// ----------------------------------------
+// PASSWORD COMPONENT
+// ----------------------------------------
+
+function PasswordChangeSection() {
+  const [form, setForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: ''
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleChange = (e:any) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setMessage('');
+
+    try {
+      await api.put('/api/auth/change-password', form);
+      setMessage('Пароль успешно изменён');
+      setForm({ currentPassword:'', newPassword:'', confirmNewPassword:'' });
+    } catch (err:any) {
+      setMessage(err.response?.data?.error || 'Ошибка смены пароля');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="mt-16 pt-10 border-t">
+      <h3 className="text-xl font-serif mb-6">Смена пароля</h3>
+
+      <div className="grid md:grid-cols-3 gap-4 mb-6">
+        <input
+          type="password"
+          name="currentPassword"
+          placeholder="Текущий пароль"
+          value={form.currentPassword}
+          onChange={handleChange}
+          className="px-4 py-3 rounded-lg border"
+        />
+        <input
+          type="password"
+          name="newPassword"
+          placeholder="Новый пароль"
+          value={form.newPassword}
+          onChange={handleChange}
+          className="px-4 py-3 rounded-lg border"
+        />
+        <input
+          type="password"
+          name="confirmNewPassword"
+          placeholder="Повторите пароль"
+          value={form.confirmNewPassword}
+          onChange={handleChange}
+          className="px-4 py-3 rounded-lg border"
+        />
+      </div>
+
+      <button
+        onClick={handleSubmit}
+        disabled={loading}
+        className="bg-[#1f2f57] text-white px-6 py-2 rounded-lg hover:bg-[#2e4379]"
+      >
+        {loading ? 'Сохранение...' : 'Обновить пароль'}
+      </button>
+
+      {message && (
+        <div className="mt-4 text-sm text-center">
+          {message}
+        </div>
+      )}
     </div>
   );
 }

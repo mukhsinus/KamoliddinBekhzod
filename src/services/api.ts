@@ -1,3 +1,4 @@
+// api.ts
 import axios from 'axios';
 
 const api = axios.create({
@@ -20,7 +21,7 @@ api.interceptors.response.use(
   error => {
     if (error.response && (error.response.status === 401 || error.response.data?.error === 'No token provided.')) {
       localStorage.removeItem('token');
-      window.location.href = '/login'; // Use /login route
+      window.location.href = '/auth';
     }
     return Promise.reject(error);
   }

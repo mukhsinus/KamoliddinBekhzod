@@ -97,14 +97,22 @@ router.get('/me', authMiddleware, async (req, res) => {
 ========================= */
 router.put('/me', authMiddleware, async (req, res) => {
   try {
-    const allowedFields = ['firstName', 'lastName', 'age', 'city', 'phone'];
+    const allowedFields = ['firstName', 'lastName', 'age', 'city', 'phone', 'email'];
     const updates = {};
 
-    allowedFields.forEach(field => {
+    for (const field of allowedFields) {
       if (req.body[field] !== undefined) {
         updates[field] = req.body[field];
       }
-    });
+    }
+
+    // Проверка уникальности email
+    if (updates.email) {
+      const existing = await User.findOne({ email: updates.email });
+      if (existing && existing._id.toString() !== req.user.userId) {
+        return res.status(409).json({ error: 'Email already in use.' });
+      }
+    }
 
     const user = await User.findByIdAndUpdate(
       req.user.userId,
@@ -113,6 +121,7 @@ router.put('/me', authMiddleware, async (req, res) => {
     ).select('-password');
 
     res.json(user);
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
