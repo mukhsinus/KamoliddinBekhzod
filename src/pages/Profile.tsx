@@ -1,3 +1,4 @@
+// Profile.tsx
 import { useEffect, useState, useRef } from 'react';
 import api from '../services/api';
 import ProfileApplicationForm from './ProfileApplicationForm';
@@ -8,106 +9,151 @@ export default function Profile() {
   const [tab, setTab] = useState<Tab>('profile');
   const [user, setUser] = useState<any>(null);
   const [form, setForm] = useState<any>(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+
   const [apps, setApps] = useState<any[]>([]);
   const [diplomas, setDiplomas] = useState<any[]>([]);
-  const [appForm, setAppForm] = useState({ fullName: '', education: '', photos: [], driveLink: '', modelParams: '', category: '' });
-  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+
   const [edit, setEdit] = useState(false);
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // --------------------------------------------
+  // DATA LOADING
+  // --------------------------------------------
+
   useEffect(() => {
-    api.get('/api/auth/me').then(res => {
-      setUser(res.data);
-      setForm(res.data);
-      setAvatarPreview(res.data.avatar || '/default-avatar.png');
-    });
-    api.get('/api/applications/my').then(res => setApps(res.data));
-    api.get('/api/diplomas/my').then(res => setDiplomas(res.data));
+    async function load() {
+      try {
+        const me = await api.get('/api/auth/me');
+        setUser(me.data);
+        setForm(me.data);
+        setAvatarPreview(me.data.avatar || '/default-avatar.png');
+
+        const myApps = await api.get('/api/applications/my');
+        setApps(myApps.data);
+
+        const myDiplomas = await api.get('/api/diplomas/my');
+        setDiplomas(myDiplomas.data);
+      } catch (e) {
+        setError('Ошибка загрузки данных');
+      } finally {
+        setLoadingUser(false);
+      }
+    }
+
+    load();
   }, []);
 
+  // --------------------------------------------
+  // SAVE PROFILE
+  // --------------------------------------------
+
   const handleProfileSave = async () => {
-    setError(''); setSuccess('');
+    setError('');
+    setSuccess('');
+    setSaving(true);
+
     try {
-      setUploading(true);
-      let updatedUser = null;
+      let avatarUrl = form.avatar;
+
       if (avatarFile) {
         const formData = new FormData();
         formData.append('avatar', avatarFile);
-        const res = await api.put('/api/auth/avatar', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        updatedUser = res.data;
-        setAvatarFile(null);
-        setAvatarPreview(res.data.avatar);
+        const res = await api.put('/api/auth/avatar', formData);
+        avatarUrl = res.data.avatar;
       }
-      // Update other fields if changed
-      const res2 = await api.put('/api/auth/me', { ...form, avatar: updatedUser ? updatedUser.avatar : form.avatar });
-      setUser(res2.data); setForm(res2.data); setSuccess('Profile updated'); setEdit(false);
+
+      const res = await api.put('/api/auth/me', {
+        ...form,
+        avatar: avatarUrl,
+      });
+
+      setUser(res.data);
+      setForm(res.data);
+      setSuccess('Профиль успешно обновлён');
+      setEdit(false);
+      setAvatarFile(null);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Update failed');
+      setError(err.response?.data?.error || 'Ошибка сохранения');
     } finally {
-      setUploading(false);
+      setSaving(false);
     }
   };
 
-  const handlePasswordChange = async () => {
-    setError(''); setSuccess('');
-    if (!passwordForm.newPassword || !passwordForm.confirmNewPassword) {
-      setError('New password fields required'); return;
-    }
-    if (passwordForm.newPassword !== passwordForm.confirmNewPassword) {
-      setError('New passwords do not match'); return;
-    }
-    try {
-      await api.put('/api/auth/change-password', passwordForm);
-      setSuccess('Password updated');
-      setPasswordForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
-    } catch (err: any) { setError(err.response?.data?.error || 'Password change failed'); }
-  };
+  // --------------------------------------------
+  // LOADING STATE
+  // --------------------------------------------
 
-  const handleAppSubmit = async () => {
-    setError(''); setSuccess('');
-    try {
-      await api.post('/api/applications', appForm);
-      setSuccess('Application submitted');
-      api.get('/api/applications/my').then(res => setApps(res.data));
-    } catch (err: any) { setError(err.response?.data?.error || 'Application failed'); }
-  };
+  if (loadingUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f5f1ea]">
+        <div className="animate-pulse text-[#1f2f57] text-lg">
+          Загрузка профиля...
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <div className="flex gap-2 mb-6">
-        <button onClick={() => setTab('profile')} className={tab === 'profile' ? 'font-bold' : ''}>Profile</button>
-        <button onClick={() => setTab('applications')} className={tab === 'applications' ? 'font-bold' : ''}>Applications</button>
-        <button onClick={() => setTab('diplomas')} className={tab === 'diplomas' ? 'font-bold' : ''}>Diplomas</button>
+    <div className="min-h-screen bg-[#f5f1ea]">
+
+      {/* HERO */}
+      <div className="bg-gradient-to-r from-[#1f2f57] to-[#2e4379] py-20 text-center text-white">
+        <h1 className="text-5xl font-serif">Личный кабинет</h1>
+        <p className="mt-4 text-gray-300">Управление профилем и заявками</p>
       </div>
-      {error && <div className="text-red-500 mb-2">{error}</div>}
-      {success && <div className="text-green-500 mb-2">{success}</div>}
-      {tab === 'profile' && user && (
-        <div>
-          <div className="rounded border p-4 mb-6">
-            <div className="mb-4 flex flex-col items-center">
-              <div className="relative">
+
+      <div className="max-w-5xl mx-auto px-6 py-16">
+
+        {/* TABS */}
+        <div className="flex justify-center gap-6 mb-12">
+          {(['profile','applications','diplomas'] as Tab[]).map(t => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`
+                relative px-6 py-3 rounded-full transition
+                ${tab === t
+                  ? 'bg-[#1f2f57] text-white shadow'
+                  : 'bg-white border border-gray-300 hover:bg-gray-100'
+                }
+              `}
+            >
+              {t === 'profile' && 'Профиль'}
+              {t === 'applications' && 'Мои заявки'}
+              {t === 'diplomas' && 'Дипломы'}
+            </button>
+          ))}
+        </div>
+
+        {error && <div className="text-red-500 text-center mb-6">{error}</div>}
+        {success && <div className="text-green-600 text-center mb-6">{success}</div>}
+
+        {/* PROFILE TAB */}
+        {tab === 'profile' && (
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-10 transition">
+
+            {/* AVATAR */}
+            <div className="flex flex-col items-center mb-12">
+              <div className="relative group">
                 <img
-                  src={avatarFile ? (avatarPreview || '/default-avatar.png') : (form?.avatar || '/default-avatar.png')}
-                  alt="avatar"
-                  className="w-24 h-24 rounded-full object-cover border mb-2 cursor-pointer"
-                  onClick={() => edit && fileInputRef.current?.click()}
-                  style={{ opacity: uploading ? 0.5 : 1 }}
+                  src={avatarPreview || '/default-avatar.png'}
+                  className="w-32 h-32 rounded-full object-cover border-4 border-[#d4af37] shadow-md"
                 />
+
                 {edit && (
                   <>
                     <input
                       ref={fileInputRef}
                       type="file"
-                      accept="image/*"
-                      style={{ display: 'none' }}
+                      hidden
                       onChange={e => {
                         const file = e.target.files?.[0];
                         if (file) {
@@ -116,74 +162,74 @@ export default function Profile() {
                         }
                       }}
                     />
-                    <span className="absolute left-0 top-0 w-24 h-24 flex items-center justify-center text-xs text-white bg-black bg-opacity-50 rounded-full pointer-events-none">Upload</span>
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white cursor-pointer transition"
+                    >
+                      Изменить
+                    </div>
                   </>
                 )}
               </div>
-              {avatarFile && <div className="text-xs text-muted-foreground mb-2">Previewing new avatar</div>}
             </div>
-            <div className="mb-2 font-semibold">Personal Information</div>
-            <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:gap-4">
-              <input
-                className="flex-1 border rounded px-2 py-1 mb-2 sm:mb-0"
-                value={form?.firstName || ''}
-                disabled={!edit}
-                onChange={e => setForm((prev: any) => ({ ...prev, firstName: e.target.value }))}
-                placeholder="First Name"
-              />
-              <input
-                className="flex-1 border rounded px-2 py-1 mb-2 sm:mb-0"
-                value={form?.lastName || ''}
-                disabled={!edit}
-                onChange={e => setForm((prev: any) => ({ ...prev, lastName: e.target.value }))}
-                placeholder="Last Name"
-              />
+
+            <h3 className="text-2xl font-serif text-center mb-10">
+              Личная информация
+            </h3>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {['firstName','lastName','age','city'].map(field => (
+                <input
+                  key={field}
+                  value={form?.[field] || ''}
+                  disabled={!edit}
+                  onChange={e => setForm((prev:any)=>({...prev, [field]:e.target.value}))}
+                  className={`
+                    px-4 py-3 rounded-lg border transition
+                    ${edit
+                      ? 'bg-white border-gray-300 focus:ring-2 focus:ring-[#1f2f57]'
+                      : 'bg-gray-100 border-gray-200'
+                    }
+                  `}
+                  placeholder={
+                    field === 'firstName' ? 'Имя' :
+                    field === 'lastName' ? 'Фамилия' :
+                    field === 'age' ? 'Возраст' :
+                    'Город'
+                  }
+                />
+              ))}
             </div>
-            <div className="mb-2 flex flex-col sm:flex-row sm:gap-4">
-              <input className="flex-1 border rounded px-2 py-1 mb-2 sm:mb-0" value={form?.age || ''} disabled={!edit} onChange={e => setForm((prev: any) => ({ ...prev, age: Number(e.target.value) }))} placeholder="Age" type="number" />
-              <input className="flex-1 border rounded px-2 py-1 mb-2 sm:mb-0" value={form?.city || ''} disabled={!edit} onChange={e => setForm((prev: any) => ({ ...prev, city: e.target.value }))} placeholder="City" />
-            </div>
-            <div className="mb-2 flex flex-col sm:flex-row sm:gap-4">
-              <input className="flex-1 border rounded px-2 py-1 mb-2 sm:mb-0" value={form?.phone || ''} disabled={!edit} onChange={e => setForm((prev: any) => ({ ...prev, phone: e.target.value }))} placeholder="Phone" />
-              <input className="flex-1 border rounded px-2 py-1 mb-2 bg-gray-100" value={form?.email || ''} readOnly placeholder="Email (read-only)" />
-            </div>
-            <button className="border px-4 py-2 rounded mb-4" onClick={() => edit ? handleProfileSave() : setEdit(true)} disabled={uploading}>
-              {uploading ? 'Saving...' : (edit ? 'Save' : 'Edit')}
-            </button>
-          </div>
-          <div className="rounded border p-4 mt-6">
-            <div className="mb-2 font-semibold">Change Password</div>
-            {!showPasswordForm ? (
-              <button className="border px-4 py-2 rounded" onClick={() => setShowPasswordForm(true)}>
-                Change Password
+
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={() => edit ? handleProfileSave() : setEdit(true)}
+                disabled={saving}
+                className="px-8 py-3 bg-[#1f2f57] text-white rounded-lg hover:bg-[#2e4379] transition disabled:opacity-50"
+              >
+                {saving ? 'Сохранение...' : (edit ? 'Сохранить изменения' : 'Редактировать профиль')}
               </button>
-            ) : (
-              <div className="flex flex-col gap-2 mt-2">
-                <input value={passwordForm.currentPassword} onChange={e => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))} placeholder="Current Password" className="w-full border rounded px-2 py-1" type="password" />
-                <input value={passwordForm.newPassword} onChange={e => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))} placeholder="New Password" className="w-full border rounded px-2 py-1" type="password" />
-                <input value={passwordForm.confirmNewPassword} onChange={e => setPasswordForm(prev => ({ ...prev, confirmNewPassword: e.target.value }))} placeholder="Confirm New Password" className="w-full border rounded px-2 py-1" type="password" />
-                <div className="flex gap-2 mt-2">
-                  <button className="border px-4 py-2 rounded" onClick={handlePasswordChange}>Save Password</button>
-                  <button className="border px-4 py-2 rounded" onClick={() => setShowPasswordForm(false)}>Cancel</button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-      {tab === 'applications' && (
-        <ProfileApplicationForm />
-      )}
-      {tab === 'diplomas' && (
-        <div>
-          <h3 className="font-bold mb-2">My Diplomas</h3>
-          {diplomas.map(d => (
-            <div key={d._id} className="mb-2">
-              <b>{d.title}</b> ({new Date(d.issueDate).toLocaleDateString()}) <a href={d.fileUrl} target="_blank" rel="noopener noreferrer">Download</a>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        )}
+
+        {tab === 'applications' && <ProfileApplicationForm />}
+
+        {tab === 'diplomas' && (
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-10">
+            <h3 className="text-2xl font-serif mb-8">Мои дипломы</h3>
+            {diplomas.map(d => (
+              <div key={d._id} className="flex justify-between py-4 border-b">
+                <span>{d.title}</span>
+                <a href={d.fileUrl} target="_blank" className="text-[#1f2f57] font-semibold">
+                  Скачать
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }
