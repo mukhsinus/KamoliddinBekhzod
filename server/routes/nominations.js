@@ -1,3 +1,4 @@
+// nominations.js / routes/nominations.js
 const express = require('express');
 const Nomination = require('../models/Nomination');
 const auth = require('../middleware/authMiddleware');
