@@ -7,7 +7,19 @@ require('dotenv').config();
 
 const app = express();
 // Serve uploads folder
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(
+  cors({
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:8080',
+      'http://localhost:8081',
+      'https://kodbekhzod.netlify.app/'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  })
+);
 
 // =======================
 // CORS CONFIG (IMPORTANT)
