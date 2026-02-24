@@ -13,7 +13,7 @@ app.use(
       'http://localhost:5173',
       'http://localhost:8080',
       'http://localhost:8081',
-      'https://kodbekhzod.netlify.app/'
+      'https://kodbekhzod.netlify.app'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],

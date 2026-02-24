@@ -1,8 +1,12 @@
 // api.ts
 import axios from 'axios';
 
+if (!import.meta.env.VITE_API_URL) {
+  throw new Error('VITE_API_URL is not defined');
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001',
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 api.interceptors.request.use(config => {
@@ -30,7 +34,7 @@ api.interceptors.response.use(
 // Utility for logout
 export function logout() {
   localStorage.removeItem('token');
-  window.location.href = '/login';
+  window.location.href = '/auth';
 }
 
 export default api;
