@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/authMiddleware');
-const upload = require('../middleware/uploadMiddleware');
+const upload = require('../middleware/avatarUpload');
 
 const router = express.Router();
 
@@ -136,6 +136,7 @@ router.put(
   upload.single('avatar'),
   async (req, res) => {
     try {
+      console.log('REQ.FILE:', req.file);
       if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded.' });
       }
@@ -145,7 +146,7 @@ router.put(
         return res.status(404).json({ error: 'User not found.' });
       }
 
-      user.avatar = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      user.avatar = `${req.protocol}://${req.get('host')}/uploads/avatars/${req.file.filename}`;
       await user.save();
 
       const userObj = user.toObject();

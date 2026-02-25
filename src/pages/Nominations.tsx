@@ -2,14 +2,20 @@ import { useEffect, useState } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from '@/services/api';
 
 interface Nomination {
   _id: string;
-  title: string;
+  title: {
+    ru: string;
+    en: string;
+  };
   slug: string;
-  description?: string;
+  description?: {
+    ru: string;
+    en: string;
+  };
   formats?: string;
   maxSize?: string;
   maxWorks?: number;
@@ -21,12 +27,24 @@ const Nominations = () => {
   const [nominations, setNominations] = useState<Nomination[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     api.get('/api/nominations')
       .then(res => setNominations(res.data))
       .catch(() => console.error('Ошибка загрузки номинаций'))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleApply = (slug: string) => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      navigate('/auth');
+    } else {
+      navigate(`/profile?nomination=${slug}`);
+    }
+  };
 
   return (
     <div>
@@ -40,9 +58,11 @@ const Nominations = () => {
           >
             {t('nominations.title')}
           </motion.h1>
+
           <div className="ornament-divider my-4">
             <span className="text-gold text-lg">✦</span>
           </div>
+
           <p className="text-primary-foreground/60 max-w-lg mx-auto">
             {t('nominations.subtitle')}
           </p>
@@ -53,7 +73,7 @@ const Nominations = () => {
       <section className="container mx-auto px-4 py-12 lg:py-20">
         {loading ? (
           <div className="text-center text-muted-foreground">
-            Загрузка номинаций...
+            {lang === 'ru' ? 'Загрузка номинаций...' : 'Loading nominations...'}
           </div>
         ) : (
           <div className="grid gap-6 lg:gap-8">
@@ -74,14 +94,15 @@ const Nominations = () => {
                       <span className="text-3xl">
                         {nom.icon || '🎨'}
                       </span>
+
                       <h2 className="font-display text-xl font-bold text-foreground lg:text-2xl">
-                        {nom.title}
+                        {nom.title?.[lang]}
                       </h2>
                     </div>
 
                     {nom.description && (
                       <p className="text-muted-foreground leading-relaxed">
-                        {nom.description}
+                        {nom.description?.[lang]}
                       </p>
                     )}
 
@@ -89,6 +110,7 @@ const Nominations = () => {
                       <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
                         {t('nominations.age')}
                       </span>
+
                       <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
                         {t('nominations.international')}
                       </span>
@@ -106,6 +128,7 @@ const Nominations = () => {
                           {nom.formats}
                         </p>
                       )}
+
                       {nom.maxSize && (
                         <p className="mt-1 text-muted-foreground">
                           <span className="font-medium text-foreground">
@@ -114,6 +137,7 @@ const Nominations = () => {
                           {nom.maxSize}
                         </p>
                       )}
+
                       {nom.maxWorks && (
                         <p className="mt-1 text-muted-foreground">
                           <span className="font-medium text-foreground">
@@ -124,13 +148,14 @@ const Nominations = () => {
                       )}
                     </div>
 
-                    <Link
-                      to={`/profile?nomination=${nom.slug}`}
+                    <button
+                      onClick={() => handleApply(nom.slug)}
                       className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 lg:w-auto"
                     >
                       {t('nominations.apply')}
                       <ArrowRight className="h-4 w-4" />
-                    </Link>
+                    </button>
+
                   </div>
 
                 </div>

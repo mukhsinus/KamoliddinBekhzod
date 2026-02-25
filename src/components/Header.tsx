@@ -1,3 +1,4 @@
+// Header.tsx
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
@@ -100,7 +101,7 @@ const Header = () => {
                   : 'bg-white/10 text-primary-foreground hover:bg-white/20'
               }`}
             >
-              Войти
+              {t('nav.login')}
             </Link>
           ) : (
             <>
@@ -112,7 +113,7 @@ const Header = () => {
                     : 'bg-white/10 text-primary-foreground hover:bg-white/20'
                 }`}
               >
-                Профиль
+                {t('profile.tabs.profile')}
               </Link>
 
               <button
@@ -123,7 +124,7 @@ const Header = () => {
                     : 'text-red-300 hover:text-red-200'
                 }`}
               >
-                Выйти
+                {t('profile.logout')}
               </button>
             </>
           )}
@@ -178,7 +179,7 @@ const Header = () => {
                   to="/auth"
                   className="rounded-md bg-primary px-4 py-3 text-sm text-primary-foreground"
                 >
-                  Войти
+                  {t('nav.login')}
                 </Link>
               ) : (
                 <>
@@ -186,13 +187,13 @@ const Header = () => {
                     to="/profile"
                     className="rounded-md bg-primary px-4 py-3 text-sm text-primary-foreground"
                   >
-                    Профиль
+                    {t('profile.tabs.profile')}
                   </Link>
                   <button
                     onClick={handleLogout}
                     className="text-left px-4 py-3 text-sm text-destructive"
                   >
-                    Выйти
+                    {t('profile.logout')}
                   </button>
                 </>
               )}

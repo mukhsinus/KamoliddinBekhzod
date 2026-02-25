@@ -1,11 +1,11 @@
+// Nomination.js
 const mongoose = require('mongoose');
 
 const nominationSchema = new mongoose.Schema(
   {
     title: {
-      type: String,
-      required: true,
-      trim: true
+      ru: { type: String, required: true, trim: true },
+      en: { type: String, required: true, trim: true }
     },
 
     slug: {
@@ -17,22 +17,22 @@ const nominationSchema = new mongoose.Schema(
     },
 
     description: {
-      type: String,
-      trim: true
+      ru: { type: String, trim: true },
+      en: { type: String, trim: true }
     },
 
     icon: {
-      type: String, // emoji или название иконки
+      type: String,
       default: '🎨'
     },
 
     formats: {
-      type: String, // "JPEG, PNG, PDF"
+      type: String,
       required: true
     },
 
     maxSize: {
-      type: String, // "50 MB"
+      type: String,
       required: true
     },
 

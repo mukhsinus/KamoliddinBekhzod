@@ -1,4 +1,4 @@
-
+// server.js
 const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -6,7 +6,10 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-// Serve uploads folder
+
+// =======================
+// CORS
+// =======================
 app.use(
   cors({
     origin: [
@@ -22,45 +25,23 @@ app.use(
 );
 
 // =======================
-// CORS CONFIG (IMPORTANT)
-// =======================
-app.use(
-  cors({
-    origin: ['http://localhost:5173', 'http://localhost:8080', 'http://localhost:8081'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  })
-);
-
-// =======================
 // MIDDLEWARE
 // =======================
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // =======================
 // ROUTES
 // =======================
-
 const authRoutes = require('./routes/authRoutes');
-const applicationRoutes = require('./routes/applicationRoutes');
+const submissionRoutes = require('./routes/submissionRoutes');
+const nominationRoutes = require('./routes/nominations');
 const diplomaRoutes = require('./routes/diplomaRoutes');
 
-const nominationRoutes = require('./routes/nominations');
-const submissionRoutes = require('./routes/submissionRoutes');
-
-
 app.use('/api/auth', authRoutes);
-app.use('/api/applications', applicationRoutes);
-app.use('/api/diplomas', diplomaRoutes);
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/nominations', nominationRoutes);
-
-
-
-app.get('/test', (req, res) => {
-  res.send('server works');
-});
-
+app.use('/api/diplomas', diplomaRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -68,7 +49,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // =======================
-// DATABASE CONNECTION
+// DATABASE
 // =======================
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI;

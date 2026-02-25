@@ -1,3 +1,4 @@
+// i18n.tsx
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
 export type Lang = 'ru' | 'en';
@@ -87,7 +88,74 @@ const translations = {
     'common.learnMore': 'Узнать больше',
     'common.submit': 'Отправить',
     'common.back': 'Назад',
+
+    // Profile
+    'profile.hero.title': 'Личный кабинет',
+    'profile.hero.subtitle': 'Управление профилем и заявками',
+
+    'profile.tabs.profile': 'Профиль',
+    'profile.tabs.applications': 'Мои заявки',
+    'profile.tabs.diplomas': 'Дипломы',
+
+    'profile.loading': 'Загрузка профиля...',
+    'profile.error.load': 'Ошибка загрузки данных',
+
+    'profile.section.personal': 'Личная информация',
+    'profile.section.contacts': 'Контактные данные',
+
+    'profile.field.firstName': 'Имя',
+    'profile.field.lastName': 'Фамилия',
+    'profile.field.age': 'Возраст',
+    'profile.field.city': 'Город',
+    'profile.field.phone': 'Телефон',
+    'profile.field.email': 'Email',
+
+    'profile.edit': 'Редактировать профиль',
+    'profile.save': 'Сохранить изменения',
+    'profile.saving': 'Сохранение...',
+    'profile.success': 'Профиль успешно обновлён',
+    'profile.saveError': 'Ошибка сохранения',
+
+    'profile.applications.empty': 'У вас пока нет заявок.',
+    'profile.applications.status': 'Статус',
+
+    'profile.diplomas.title': 'Мои дипломы',
+    'profile.diplomas.download': 'Скачать',
+
+    // Password
+    'profile.password.title': 'Смена пароля',
+    'profile.password.current': 'Текущий пароль',
+    'profile.password.new': 'Новый пароль',
+    'profile.password.confirm': 'Повторите пароль',
+    'profile.password.update': 'Обновить пароль',
+    'profile.password.success': 'Пароль успешно изменён',
+    'profile.password.error': 'Ошибка смены пароля',
+    
+    'profile.logout': 'Выйти',
+    // FORM
+    'profile.form.title': 'Подача заявки',
+    'profile.form.field.fullName': 'ФИО участника',
+    'profile.form.field.education': 'Учебное заведение и факультет',
+    'profile.form.field.drive': 'Ссылка на Google Drive (необязательно)',
+    'profile.form.field.description': 'Описание работы (необязательно)',
+
+    'profile.form.upload': 'Загрузить работы',
+    'profile.form.maxFiles': 'до 10 файлов',
+
+    'profile.form.submit': 'Подать заявку',
+    'profile.form.sending': 'Отправка...',
+
+    'profile.form.error.loadNominations': 'Ошибка загрузки номинаций',
+    'profile.form.error.noNomination': 'Выберите номинацию',
+    'profile.form.error.noWorks': 'Загрузите хотя бы одну работу',
+    'profile.form.error.submit': 'Ошибка отправки',
+
+    'profile.form.success.title': 'Заявка отправлена',
+    'profile.form.success.subtitle': 'Ваша работа успешно отправлена на рассмотрение жюри.',
   },
+
+
+
   en: {
     'nav.home': 'Home',
     'nav.about': 'About',
@@ -162,6 +230,70 @@ const translations = {
     'common.learnMore': 'Learn More',
     'common.submit': 'Submit',
     'common.back': 'Back',
+
+
+    'profile.hero.title': 'Profile',
+    'profile.hero.subtitle': 'Manage your profile and submissions',
+
+    'profile.tabs.profile': 'Profile',
+    'profile.tabs.applications': 'My Applications',
+    'profile.tabs.diplomas': 'Diplomas',
+
+    'profile.loading': 'Loading profile...',
+    'profile.error.load': 'Failed to load data',
+
+    'profile.section.personal': 'Personal Information',
+    'profile.section.contacts': 'Contact Information',
+
+    'profile.field.firstName': 'First Name',
+    'profile.field.lastName': 'Last Name',
+    'profile.field.age': 'Age',
+    'profile.field.city': 'City',
+    'profile.field.phone': 'Phone',
+    'profile.field.email': 'Email',
+
+    'profile.edit': 'Edit Profile',
+    'profile.save': 'Save Changes',
+    'profile.saving': 'Saving...',
+    'profile.success': 'Profile updated successfully',
+    'profile.saveError': 'Save failed',
+
+    'profile.applications.empty': 'You have no applications yet.',
+    'profile.applications.status': 'Status',
+
+    'profile.diplomas.title': 'My Diplomas',
+    'profile.diplomas.download': 'Download',
+
+    'profile.password.title': 'Change Password',
+    'profile.password.current': 'Current Password',
+    'profile.password.new': 'New Password',
+    'profile.password.confirm': 'Confirm Password',
+    'profile.password.update': 'Update Password',
+    'profile.password.success': 'Password updated successfully',
+    'profile.password.error': 'Password update failed',
+
+
+    'profile.logout': 'Logout',
+
+    'profile.form.title': 'Submit Application',
+    'profile.form.field.fullName': 'Full Name',
+    'profile.form.field.education': 'Educational Institution and Faculty',
+    'profile.form.field.drive': 'Google Drive link (optional)',
+    'profile.form.field.description': 'Work description (optional)',
+
+    'profile.form.upload': 'Upload works',
+    'profile.form.maxFiles': 'up to 10 files',
+
+    'profile.form.submit': 'Submit Application',
+    'profile.form.sending': 'Submitting...',
+
+    'profile.form.error.loadNominations': 'Failed to load nominations',
+    'profile.form.error.noNomination': 'Select a nomination',
+    'profile.form.error.noWorks': 'Upload at least one work',
+    'profile.form.error.submit': 'Submission error',
+
+    'profile.form.success.title': 'Application Submitted',
+    'profile.form.success.subtitle': 'Your work has been successfully submitted for jury review.',
   },
 } as const;
 

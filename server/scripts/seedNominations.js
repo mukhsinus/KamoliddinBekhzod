@@ -1,88 +1,131 @@
+// seedNominations.js
+require('dotenv').config();
 const mongoose = require('mongoose');
 const Nomination = require('../models/Nomination');
 
-const MONGO_URI = 'mongodb+srv://KodBekhzod:tarjiV-kevwic-7cugqa@cluster0.xlbowez.mongodb.net/?appName=Cluster0'; 
-// ← ЗАМЕНИ на своё имя базы
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/behzod';
 
 const nominations = [
   {
-    title: "Современные интерпретации в изобразительном искусстве",
+    title: {
+      ru: "Современные интерпретации в изобразительном искусстве",
+      en: "Contemporary Interpretations in Fine Art"
+    },
     slug: "modern-art",
-    description: "Живопись, графика и смешанные техники с элементами переосмысления классических традиций восточной миниатюры",
+    description: {
+      ru: "Живопись, графика и смешанные техники с элементами переосмысления классических традиций восточной миниатюры",
+      en: "Painting, graphics and mixed media with reinterpretations of classical Eastern miniature traditions"
+    },
     icon: "🎨",
     formats: "JPEG, PNG, TIFF",
-    maxSize: "50 MB",
+    maxSize: "5 MB",
     maxWorks: 5
   },
   {
-    title: "Декоративно-прикладное искусство",
+    title: {
+      ru: "Декоративно-прикладное искусство",
+      en: "Decorative and Applied Arts"
+    },
     slug: "decorative-art",
-    description: "Керамика, текстиль, ювелирное искусство, резьба и другие виды прикладного творчества",
+    description: {
+      ru: "Керамика, текстиль, ювелирное искусство, резьба и другие виды прикладного творчества",
+      en: "Ceramics, textiles, jewelry, carving and other forms of applied art"
+    },
     icon: "🏺",
     formats: "JPEG, PNG, PDF",
-    maxSize: "50 MB",
+    maxSize: "5 MB",
     maxWorks: 5
   },
   {
-    title: "Иллюстрация и книжная графика",
+    title: {
+      ru: "Иллюстрация и книжная графика",
+      en: "Illustration and Book Graphics"
+    },
     slug: "illustration",
-    description: "Книжная иллюстрация, графические романы и визуальное повествование",
+    description: {
+      ru: "Книжная иллюстрация, графические романы и визуальное повествование",
+      en: "Book illustration, graphic novels and visual storytelling"
+    },
     icon: "📖",
     formats: "JPEG, PNG, PDF",
-    maxSize: "50 MB",
+    maxSize: "5 MB",
     maxWorks: 10
   },
   {
-    title: "Цифровое искусство и мультимедиа",
+    title: {
+      ru: "Цифровое искусство и мультимедиа",
+      en: "Digital Art and Multimedia"
+    },
     slug: "digital-art",
-    description: "3D-моделирование, анимация, видео-арт, интерактивные инсталляции и AR/VR",
+    description: {
+      ru: "3D-моделирование, анимация, видео-арт, интерактивные инсталляции и AR/VR",
+      en: "3D modeling, animation, video art, interactive installations and AR/VR"
+    },
     icon: "💻",
     formats: "JPEG, PNG, MP4, GLB",
-    maxSize: "200 MB",
+    maxSize: "5 MB",
     maxWorks: 3
   },
   {
-    title: "Графический дизайн",
+    title: {
+      ru: "Графический дизайн",
+      en: "Graphic Design"
+    },
     slug: "graphic-design",
-    description: "Айдентика, плакат, упаковка, типографика и визуальные коммуникации",
+    description: {
+      ru: "Айдентика, плакат, упаковка, типографика и визуальные коммуникации",
+      en: "Brand identity, poster design, packaging, typography and visual communications"
+    },
     icon: "✏️",
     formats: "JPEG, PNG, PDF",
-    maxSize: "50 MB",
+    maxSize: "5 MB",
     maxWorks: 5
   },
   {
-    title: "Архитектурный дизайн",
+    title: {
+      ru: "Архитектурный дизайн",
+      en: "Architectural Design"
+    },
     slug: "architecture",
-    description: "Дизайн интерьеров и экстерьеров с элементами традиционной архитектуры",
+    description: {
+      ru: "Дизайн интерьеров и экстерьеров с элементами традиционной архитектуры",
+      en: "Interior and exterior design incorporating traditional architectural elements"
+    },
     icon: "🏛️",
     formats: "JPEG, PNG, PDF, MP4",
-    maxSize: "100 MB",
+    maxSize: "5 MB",
     maxWorks: 3
   },
   {
-    title: "Моделирование одежды и аксессуаров",
+    title: {
+      ru: "Моделирование одежды и аксессуаров",
+      en: "Fashion and Accessory Design"
+    },
     slug: "fashion",
-    description: "Модный дизайн, текстильный дизайн и аксессуары с культурными мотивами",
+    description: {
+      ru: "Модный дизайн, текстильный дизайн и аксессуары с культурными мотивами",
+      en: "Fashion design, textile design and accessories inspired by cultural motifs"
+    },
     icon: "👗",
     formats: "JPEG, PNG, PDF, MP4",
-    maxSize: "100 MB",
+    maxSize: "5 MB",
     maxWorks: 5
   }
 ];
 
 async function seed() {
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI);
 
     await Nomination.deleteMany({});
-    console.log("Старые номинации удалены");
+    console.log("Old nominations removed");
 
     await Nomination.insertMany(nominations);
-    console.log("Номинации добавлены");
+    console.log("Nominations seeded successfully");
 
-    process.exit();
+    process.exit(0);
   } catch (err) {
-    console.error(err);
+    console.error("Seeding error:", err);
     process.exit(1);
   }
 }
