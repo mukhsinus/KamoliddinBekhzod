@@ -1,40 +1,32 @@
-// api.ts
-import axios from 'axios';
+import axios from "axios";
 
 if (!import.meta.env.VITE_API_URL) {
-  throw new Error('VITE_API_URL is not defined');
+  throw new Error("VITE_API_URL is not defined");
 }
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL
 });
 
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  console.log('[API] Interceptor running. Token:', token);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log('[API] Authorization header set:', config.headers.Authorization);
   }
+
   return config;
 });
 
-// Handle expired/invalid tokens globally
 api.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response && (error.response.status === 401 || error.response.data?.error === 'No token provided.')) {
-      localStorage.removeItem('token');
-      window.location.href = '/auth';
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
     }
+
     return Promise.reject(error);
   }
 );
-
-// Utility for logout
-export function logout() {
-  localStorage.removeItem('token');
-  window.location.href = '/auth';
-}
 
 export default api;
