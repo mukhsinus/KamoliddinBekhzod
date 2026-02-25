@@ -1,9 +1,13 @@
+// Auth.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { ArrowRight } from 'lucide-react';
+import { useI18n } from '@/lib/i18n';
 
 export default function Auth() {
+  const { t } = useI18n();
+
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [form, setForm] = useState({
     firstName: '',
@@ -45,7 +49,7 @@ export default function Auth() {
       localStorage.setItem('token', res.data.token);
       navigate('/profile');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Ошибка авторизации');
+      setError(err.response?.data?.error || t('auth.error'));
     } finally {
       setLoading(false);
     }
@@ -56,15 +60,19 @@ export default function Auth() {
 
       {/* HERO */}
       <section className="gradient-hero">
-      <div className="container mx-auto px-4 py-24 text-center text-primary-foreground">
+        <div className="container mx-auto px-4 py-24 text-center text-primary-foreground">
           <h1 className="font-display text-4xl md:text-5xl font-bold">
-            {mode === 'login' ? 'Вход в личный кабинет' : 'Регистрация участника'}
+            {mode === 'login'
+              ? t('auth.hero.loginTitle')
+              : t('auth.hero.registerTitle')}
           </h1>
+
           <div className="ornament-divider my-6">
             <span className="text-gold text-xl">✦</span>
           </div>
+
           <p className="text-primary-foreground/70 max-w-xl mx-auto">
-            Управляйте профилем и подавайте заявки на участие в конкурсе
+            {t('auth.hero.subtitle')}
           </p>
         </div>
       </section>
@@ -85,8 +93,9 @@ export default function Auth() {
                 }
               `}
             >
-              Вход
+              {t('auth.login')}
             </button>
+
             <button
               type="button"
               onClick={() => setMode('register')}
@@ -97,7 +106,7 @@ export default function Auth() {
                 }
               `}
             >
-              Регистрация
+              {t('auth.register')}
             </button>
           </div>
 
@@ -112,7 +121,9 @@ export default function Auth() {
             {mode === 'register' && (
               <>
                 <div>
-                  <label className="text-sm text-muted-foreground">Имя</label>
+                  <label className="text-sm text-muted-foreground">
+                    {t('auth.firstName')}
+                  </label>
                   <input
                     name="firstName"
                     value={form.firstName}
@@ -123,7 +134,9 @@ export default function Auth() {
                 </div>
 
                 <div>
-                  <label className="text-sm text-muted-foreground">Фамилия</label>
+                  <label className="text-sm text-muted-foreground">
+                    {t('auth.lastName')}
+                  </label>
                   <input
                     name="lastName"
                     value={form.lastName}
@@ -136,7 +149,9 @@ export default function Auth() {
             )}
 
             <div>
-              <label className="text-sm text-muted-foreground">Email</label>
+              <label className="text-sm text-muted-foreground">
+                {t('auth.email')}
+              </label>
               <input
                 type="email"
                 name="email"
@@ -149,7 +164,9 @@ export default function Auth() {
             </div>
 
             <div>
-              <label className="text-sm text-muted-foreground">Пароль</label>
+              <label className="text-sm text-muted-foreground">
+                {t('auth.password')}
+              </label>
               <input
                 type="password"
                 name="password"
@@ -167,7 +184,11 @@ export default function Auth() {
               disabled={loading}
               className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gold px-6 py-3 font-medium text-primary shadow-gold transition-all hover:brightness-110 disabled:opacity-50"
             >
-              {loading ? 'Обработка...' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
+              {loading
+                ? t('auth.loading')
+                : mode === 'login'
+                ? t('auth.login')
+                : t('auth.register')}
               <ArrowRight className="h-4 w-4" />
             </button>
 

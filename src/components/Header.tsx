@@ -66,7 +66,7 @@ const Header = () => {
               {lang === 'ru' ? 'Конкурс Бехзода' : 'Behzod Competition'}
             </p>
             <p className={`text-xs ${topMuted}`}>
-              {lang === 'ru' ? 'Международный' : 'International'}
+              {lang === 'ru' ? '' : 'International'}
             </p>
           </div>
         </Link>

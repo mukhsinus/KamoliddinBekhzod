@@ -36,6 +36,24 @@ const translations = {
     'about.geography': 'Международное участие',
     'about.format': 'Ежегодный конкурс',
 
+
+    // Auth
+    'auth.hero.loginTitle': 'Вход в личный кабинет',
+    'auth.hero.registerTitle': 'Регистрация участника',
+    'auth.hero.subtitle': 'Управляйте профилем и подавайте заявки на участие в конкурсе',
+
+    'auth.login': 'Вход',
+    'auth.register': 'Регистрация',
+
+    'auth.firstName': 'Имя',
+    'auth.lastName': 'Фамилия',
+    'auth.email': 'Email',
+    'auth.password': 'Пароль',
+
+    'auth.loading': 'Обработка...',
+    'auth.error': 'Ошибка авторизации',
+
+
     // Nominations
     'nominations.title': 'Номинации',
     'nominations.subtitle': 'Семь направлений творческого самовыражения',
@@ -230,6 +248,24 @@ const translations = {
     'common.learnMore': 'Learn More',
     'common.submit': 'Submit',
     'common.back': 'Back',
+
+
+    // Auth
+    'auth.hero.loginTitle': 'Sign in to your account',
+    'auth.hero.registerTitle': 'Participant registration',
+    'auth.hero.subtitle': 'Manage your profile and submit competition applications',
+
+    'auth.login': 'Sign In',
+    'auth.register': 'Register',
+
+    'auth.firstName': 'First Name',
+    'auth.lastName': 'Last Name',
+    'auth.email': 'Email',
+    'auth.password': 'Password',
+
+    'auth.loading': 'Processing...',
+    'auth.error': 'Authorization error',
+
 
 
     'profile.hero.title': 'Profile',
