@@ -1,3 +1,4 @@
+// Header.tsx
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useI18n } from "@/lib/i18n";
@@ -7,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const Header = () => {
   const { t, lang, setLang } = useI18n();
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -45,7 +46,7 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    logout();
     navigate("/", { replace: true });
   };
 

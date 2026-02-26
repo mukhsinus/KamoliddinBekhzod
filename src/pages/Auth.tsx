@@ -1,12 +1,14 @@
-// Auth.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import api from '@/services/api';
 import { ArrowRight } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Auth() {
   const { t } = useI18n();
+  const { refreshUser } = useAuth();
+  const navigate = useNavigate();
 
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [form, setForm] = useState({
@@ -15,10 +17,9 @@ export default function Auth() {
     email: '',
     password: '',
   });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -26,30 +27,54 @@ export default function Auth() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+
+    if (loading) return;
+
+    setError(null);
     setLoading(true);
 
     try {
-      let res;
+      const endpoint =
+        mode === 'login' ? '/api/auth/login' : '/api/auth/register';
 
-      if (mode === 'login') {
-        res = await api.post('/api/auth/login', {
-          email: form.email,
-          password: form.password,
-        });
-      } else {
-        res = await api.post('/api/auth/register', {
-          firstName: form.firstName,
-          lastName: form.lastName,
-          email: form.email,
-          password: form.password,
-        });
+      const payload =
+        mode === 'login'
+          ? {
+              email: form.email.trim(),
+              password: form.password,
+            }
+          : {
+              firstName: form.firstName.trim(),
+              lastName: form.lastName.trim(),
+              email: form.email.trim(),
+              password: form.password,
+            };
+
+      const res = await api.post(endpoint, payload);
+
+      if (!res.data?.token) {
+        throw new Error('Token not returned from server');
       }
 
+      // 1️⃣ Сохраняем токен
       localStorage.setItem('token', res.data.token);
-      navigate('/profile');
+
+      // 2️⃣ Загружаем текущего пользователя
+      await refreshUser();
+
+      // 3️⃣ Только после успешной синхронизации — переход
+      navigate('/profile', { replace: true });
+
     } catch (err: any) {
-      setError(err.response?.data?.error || t('auth.error'));
+      const message =
+        err?.response?.data?.error ||
+        err?.message ||
+        t('auth.error');
+
+      setError(message);
+
+      // если логин упал — на всякий случай очищаем токен
+      localStorage.removeItem('token');
     } finally {
       setLoading(false);
     }
@@ -86,6 +111,7 @@ export default function Auth() {
             <button
               type="button"
               onClick={() => setMode('login')}
+              disabled={loading}
               className={`px-6 py-2 rounded-full text-sm font-medium transition
                 ${mode === 'login'
                   ? 'bg-primary text-primary-foreground shadow-soft'
@@ -99,6 +125,7 @@ export default function Auth() {
             <button
               type="button"
               onClick={() => setMode('register')}
+              disabled={loading}
               className={`px-6 py-2 rounded-full text-sm font-medium transition
                 ${mode === 'register'
                   ? 'bg-primary text-primary-foreground shadow-soft'
@@ -155,10 +182,10 @@ export default function Auth() {
               <input
                 type="email"
                 name="email"
-                autoComplete={mode === 'login' ? 'username' : 'email'}
                 value={form.email}
                 onChange={handleChange}
                 required
+                autoComplete={mode === 'login' ? 'username' : 'email'}
                 className="mt-1 w-full rounded-lg border border-input bg-background px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
@@ -170,11 +197,11 @@ export default function Auth() {
               <input
                 type="password"
                 name="password"
-                autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                 value={form.password}
                 onChange={handleChange}
                 required
                 minLength={6}
+                autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                 className="mt-1 w-full rounded-lg border border-input bg-background px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>

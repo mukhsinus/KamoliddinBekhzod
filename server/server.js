@@ -1,21 +1,35 @@
-// server.js
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const evaluationRoutes = require('./routes/evaluationRoutes');
-const contestRoutes = require('./routes/contestRoutes');
-const logRoutes = require('./routes/logRoutes');
-const userRoutes = require('./routes/userRoutes');
-const dashboardRoutes = require('./routes/dashboardRoutes');
 require('dotenv').config();
-
 
 const app = express();
 
-// =======================
-// CORS
-// =======================
+/* ===================================================
+   DIAGNOSTICS
+=================================================== */
+
+console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━");
+console.log("RUNTIME DIR:", __dirname);
+
+const uploadAbsolutePath = path.resolve(__dirname, 'uploads');
+console.log("STATIC ABS PATH:", uploadAbsolutePath);
+
+const testAvatarPath = path.resolve(
+  __dirname,
+  'uploads/avatars/avatar-1772035067615.webp'
+);
+
+console.log("TEST FILE PATH:", testAvatarPath);
+console.log("FILE EXISTS:", fs.existsSync(testAvatarPath));
+console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+/* ===================================================
+   CORS
+=================================================== */
+
 app.use(
   cors({
     origin: [
@@ -24,22 +38,34 @@ app.use(
       'http://localhost:8081',
       'https://kodbekhzod.netlify.app'
     ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
   })
 );
 
-// =======================
-// MIDDLEWARE
-// =======================
+/* ===================================================
+   MIDDLEWARE
+=================================================== */
+
 app.use(express.json({ limit: '1mb' }));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Абсолютный путь
+app.use('/uploads', express.static(uploadAbsolutePath));
 
-// =======================
-// ROUTES
-// =======================
+// Логируем любые 404 на uploads
+app.use('/uploads', (req, res, next) => {
+  console.log("UPLOAD REQUEST:", req.originalUrl);
+  next();
+});
+
+/* ===================================================
+   ROUTES
+=================================================== */
+
+const evaluationRoutes = require('./routes/evaluationRoutes');
+const contestRoutes = require('./routes/contestRoutes');
+const logRoutes = require('./routes/logRoutes');
+const userRoutes = require('./routes/userRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
 const authRoutes = require('./routes/authRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
 const nominationRoutes = require('./routes/nominations');
@@ -55,14 +81,14 @@ app.use('/api/submissions', submissionRoutes);
 app.use('/api/nominations', nominationRoutes);
 app.use('/api/diplomas', diplomaRoutes);
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// =======================
-// DATABASE
-// =======================
+/* ===================================================
+   DATABASE
+=================================================== */
+
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI;
 

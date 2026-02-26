@@ -1,3 +1,4 @@
+// api.ts
 import axios from "axios";
 
 if (!import.meta.env.VITE_API_URL) {
