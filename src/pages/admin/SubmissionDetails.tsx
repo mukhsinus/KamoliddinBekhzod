@@ -1,3 +1,4 @@
+// SubmissionDetails.tsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/services/api";
@@ -93,7 +94,7 @@ export default function SubmissionDetails() {
       </h1>
 
       {/* META */}
-      <div className="bg-white border rounded-xl p-6 space-y-4">
+      <div className="bg-white border rounded-2xl p-5 sm:p-6 space-y-4">
 
         <div>
           <strong>Author:</strong>{" "}
@@ -121,7 +122,7 @@ export default function SubmissionDetails() {
 
       {/* WORK DESCRIPTION */}
       {data.workDescription && (
-        <div className="bg-white border rounded-xl p-6">
+        <div className="bg-white border rounded-2xl p-5 sm:p-6">
           <h2 className="font-semibold mb-2">
             Work Description
           </h2>
@@ -132,10 +133,10 @@ export default function SubmissionDetails() {
       )}
 
       {/* WORK FILES */}
-      <div className="bg-white border rounded-xl p-6 space-y-4">
+      <div className="bg-white border rounded-2xl p-5 sm:p-6 space-y-4">
         <h2 className="font-semibold">Works</h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {data.works.map((work) => (
             <a
               key={work}
@@ -155,7 +156,7 @@ export default function SubmissionDetails() {
       </div>
 
       {/* EVALUATIONS */}
-      <div className="bg-white border rounded-xl p-6 space-y-4">
+      <div className="bg-white border rounded-2xl p-5 sm:p-6 space-y-4">
         <h2 className="font-semibold">
           Jury Evaluations
         </h2>
@@ -186,7 +187,7 @@ export default function SubmissionDetails() {
       </div>
 
       {/* ACTIONS */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <button
           onClick={() =>
             updateStatus.mutate("approved")

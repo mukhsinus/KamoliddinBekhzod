@@ -36,7 +36,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
@@ -62,7 +62,7 @@ export default function Dashboard() {
       </div>
 
       {/* STATS GRID */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 
         <StatsCard
           title="Total Users"
@@ -120,9 +120,9 @@ export default function Dashboard() {
 
 function StatsCard({ title, value }: { title: string; value: number }) {
   return (
-    <div className="bg-white shadow-sm border rounded-xl p-6">
+    <div className="bg-white border rounded-2xl p-5 sm:p-6 hover:shadow-md transition">
       <div className="text-sm text-gray-500">{title}</div>
-      <div className="mt-2 text-3xl font-bold">{value}</div>
+      <div className="mt-2 text-2xl sm:text-3xl font-bold">{value}</div>
     </div>
   );
 }

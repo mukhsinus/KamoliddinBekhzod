@@ -1,3 +1,4 @@
+// Logs.tsx
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import api from "@/services/api";
@@ -68,7 +69,11 @@ export default function Logs() {
       <h1 className="text-3xl font-bold">System Logs</h1>
 
       {/* FILTERS */}
-      <div className="flex flex-wrap gap-4">
+      <div className="
+        grid gap-4
+        sm:grid-cols-2
+        lg:grid-cols-4
+      ">
 
         <input
           placeholder="Action..."
@@ -77,7 +82,7 @@ export default function Logs() {
             setPage(1);
             setAction(e.target.value);
           }}
-          className="border rounded-lg px-4 py-2"
+          className="w-full border rounded-lg px-4 py-2"
         />
 
         <input
@@ -87,7 +92,7 @@ export default function Logs() {
             setPage(1);
             setUserId(e.target.value);
           }}
-          className="border rounded-lg px-4 py-2"
+          className="w-full border rounded-lg px-4 py-2"
         />
 
         <input
@@ -97,7 +102,7 @@ export default function Logs() {
             setPage(1);
             setFrom(e.target.value);
           }}
-          className="border rounded-lg px-4 py-2"
+          className="w-full border rounded-lg px-4 py-2"
         />
 
         <input
@@ -107,15 +112,15 @@ export default function Logs() {
             setPage(1);
             setTo(e.target.value);
           }}
-          className="border rounded-lg px-4 py-2"
+          className="w-full border rounded-lg px-4 py-2"
         />
 
       </div>
 
       {/* TABLE */}
-      <div className="bg-white border rounded-xl overflow-hidden">
-
-        <table className="w-full text-left">
+      <div className="bg-white border rounded-2xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-[800px] w-full text-left text-sm">
 
           <thead className="bg-gray-50 border-b">
             <tr>
@@ -169,10 +174,14 @@ export default function Logs() {
           </tbody>
 
         </table>
+        </div>
       </div>
 
       {/* PAGINATION */}
-      <div className="flex justify-between items-center">
+      <div className="
+        flex flex-col gap-4
+        sm:flex-row sm:items-center sm:justify-between
+      ">
 
         <div>
           Page {data.pagination.page} of {data.pagination.pages}

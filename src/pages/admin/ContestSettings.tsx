@@ -1,3 +1,4 @@
+// ContestSettings.tsx
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import api from "@/services/api";
@@ -72,7 +73,7 @@ export default function ContestSettings() {
       </h1>
 
       {/* PHASE CONTROL */}
-      <div className="bg-white border rounded-xl p-6 space-y-6">
+      <div className="rounded-2xl p-5 sm:p-6 space-y-6">
         <div>
           <label className="block text-sm font-medium mb-2">
             Contest Phase
@@ -102,7 +103,7 @@ export default function ContestSettings() {
       </div>
 
       {/* DEADLINES */}
-      <div className="bg-white border rounded-xl p-6 space-y-6">
+      <div className="w-full sm:w-auto border rounded-lg px-4 py-2">
         <h2 className="text-xl font-semibold">
           Deadlines
         </h2>
@@ -129,7 +130,7 @@ export default function ContestSettings() {
                     submissionDeadline || null
                 })
               }
-              className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg"
+              className="mt-3 sm:mt-0 sm:ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg"
             >
               Save
             </button>
@@ -156,7 +157,7 @@ export default function ContestSettings() {
                     evaluationDeadline || null
                 })
               }
-              className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg"
+              className="mt-3 sm:mt-0 sm:ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg"
             >
               Save
             </button>

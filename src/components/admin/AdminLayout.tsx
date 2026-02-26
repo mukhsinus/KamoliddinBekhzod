@@ -25,7 +25,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="flex min-h-screen bg-gray-100">
 
       {/* MOBILE OVERLAY */}
       {open && (
@@ -38,7 +38,7 @@ export default function AdminLayout() {
       {/* SIDEBAR */}
       <div
         className={`
-          fixed inset-y-0 left-0 z-50 w-64 bg-white border-r transform
+          fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-white border-r transform
           transition-transform duration-300 ease-in-out
           ${open ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0 lg:static lg:block
@@ -51,7 +51,9 @@ export default function AdminLayout() {
       <div className="flex flex-col flex-1">
 
         {/* TOPBAR */}
-        <header className="h-16 bg-white border-b flex items-center justify-between px-6">
+        <header className="min-h-[64px] bg-white border-b 
+                   flex items-center justify-between 
+                   px-4 sm:px-6">
 
           <div className="flex items-center gap-4">
 
@@ -78,7 +80,7 @@ export default function AdminLayout() {
           {/* USER INFO */}
           <div className="flex items-center gap-4">
 
-            <div className="text-sm text-right">
+            <div className="text-sm text-right hidden sm:block">
               <div className="font-medium">
                 {user?.firstName} {user?.lastName}
               </div>
@@ -99,7 +101,10 @@ export default function AdminLayout() {
         </header>
 
         {/* CONTENT */}
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="flex-1 overflow-y-auto 
+                 px-4 py-6 
+                 sm:px-6 
+                 lg:px-8 lg:py-8">
           <Outlet />
         </main>
 

@@ -76,7 +76,7 @@ export default function Users() {
     <div className="space-y-8">
 
       {/* HEADER */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-bold">Users</h1>
       </div>
 
@@ -85,7 +85,7 @@ export default function Users() {
         <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
-          className="border rounded-lg px-4 py-2"
+          className="w-full sm:w-60 border rounded-lg px-4 py-2"
         >
           <option value="">All Roles</option>
           <option value="participant">Participant</option>
@@ -95,16 +95,17 @@ export default function Users() {
       </div>
 
       {/* TABLE */}
-      <div className="bg-white border rounded-xl overflow-hidden">
-        <table className="w-full text-left">
+      <div className="bg-white border rounded-2xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-[800px] w-full text-left text-sm">
 
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="p-4">Name</th>
-              <th className="p-4">Email</th>
-              <th className="p-4">Role</th>
-              <th className="p-4">Status</th>
-              <th className="p-4">Actions</th>
+              <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3">Email</th>
+              <th className="px-4 py-3">Role</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
 
@@ -112,15 +113,15 @@ export default function Users() {
             {filteredUsers.map((user) => (
               <tr key={user._id} className="border-b">
 
-                <td className="p-4 font-medium">
+                <td className="px-4 py-3 font-medium">
                   {user.firstName} {user.lastName}
                 </td>
 
-                <td className="p-4 text-gray-600">
+                <td className="px-4 py-3 text-gray-600">
                   {user.email}
                 </td>
 
-                <td className="p-4">
+                <td className="px-4 py-3">
                   <select
                     value={user.role}
                     disabled={changeRole.isPending}
@@ -138,7 +139,7 @@ export default function Users() {
                   </select>
                 </td>
 
-                <td className="p-4">
+                <td className="px-4 py-3">
                   {user.isActive !== false ? (
                     <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
                       Active
@@ -150,7 +151,7 @@ export default function Users() {
                   )}
                 </td>
 
-                <td className="p-4">
+                <td className="px-4 py-3">
                   <button
                     disabled={toggleActive.isPending}
                     onClick={() =>
@@ -172,6 +173,7 @@ export default function Users() {
           </tbody>
 
         </table>
+        </div>
       </div>
 
     </div>

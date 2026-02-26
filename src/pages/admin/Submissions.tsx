@@ -52,16 +52,16 @@ export default function Submissions() {
         Submissions
       </h1>
 
-      <div className="bg-white border rounded-xl overflow-hidden">
-
-        <table className="w-full text-left text-sm">
+      <div className="bg-white border rounded-2xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-[700px] w-full text-left text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="p-4">User</th>
-              <th className="p-4">Nomination</th>
-              <th className="p-4">Status</th>
-              <th className="p-4">Date</th>
-              <th className="p-4">Details</th>
+              <th className="px-4 py-3">User</th>
+              <th className="px-4 py-3">Nomination</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Date</th>
+              <th className="px-4 py-3">Details</th>
             </tr>
           </thead>
 
@@ -69,26 +69,26 @@ export default function Submissions() {
             {data.data.map((submission) => (
               <tr key={submission._id} className="border-b">
 
-                <td className="p-4">
+                <td className="px-4 py-3">
                   {submission.user.firstName}{" "}
                   {submission.user.lastName}
                 </td>
 
-                <td className="p-4">
+                <td className="px-4 py-3">
                   {submission.nomination}
                 </td>
 
-                <td className="p-4 capitalize">
+                <td className="px-4 py-3 capitalize">
                   {submission.status}
                 </td>
 
-                <td className="p-4">
+                <td className="px-4 py-3">
                   {new Date(
                     submission.createdAt
                   ).toLocaleDateString()}
                 </td>
 
-                <td className="p-4">
+                <td className="px-4 py-3">
                   <Link
                     to={`/admin/submissions/${submission._id}`}
                     className="text-indigo-600 hover:underline"
@@ -101,11 +101,11 @@ export default function Submissions() {
             ))}
           </tbody>
         </table>
-
       </div>
+    </div>
 
       {/* Pagination */}
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
         <button
           disabled={page === 1}
