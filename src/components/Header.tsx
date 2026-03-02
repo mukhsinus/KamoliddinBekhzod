@@ -1,10 +1,18 @@
 // Header.tsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/context/AuthContext";
+import { UserRole } from "@/types/roles";
 import { Menu, X, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
+interface RoleNavItem {
+  label: string;
+  to: string;
+  roles: UserRole[];
+  highlight?: boolean;
+}
 
 const Header = () => {
   const { t, lang, setLang } = useI18n();
@@ -17,7 +25,6 @@ const Header = () => {
   const navigate = useNavigate();
 
   const isAuthenticated = !!user;
-  const isAdmin = user?.role === "admin";
 
   /* =========================
      Scroll Detection
@@ -31,9 +38,9 @@ const Header = () => {
   }, []);
 
   /* =========================
-     Navigation Links
+     Base Navigation
   ========================= */
-  const baseLinks = [
+  const baseLinks = useMemo(() => [
     { to: "/", label: t("nav.home") },
     { to: "/about", label: t("nav.about") },
     { to: "/nominations", label: t("nav.nominations") },
@@ -41,9 +48,40 @@ const Header = () => {
     { to: "/faq", label: t("nav.faq") },
     { to: "/biography", label: t("nav.biography") },
     { to: "/contacts", label: t("nav.contacts") },
+  ], [t]);
+
+  /* =========================
+     Role-based Navigation
+  ========================= */
+  const roleLinks: RoleNavItem[] = [
+    {
+      label: t("profile.tabs.profile"),
+      to: "/profile",
+      roles: ["participant", "jury", "admin"]
+    },
+    {
+      label: "Jury Panel",
+      to: "/jury",
+      roles: ["jury"],
+      highlight: true
+    },
+    {
+      label: "Admin Panel",
+      to: "/admin",
+      roles: ["admin"],
+      highlight: true
+    }
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const allowedRoleLinks = useMemo(() => {
+    if (!user) return [];
+    return roleLinks.filter(link =>
+      link.roles.includes(user.role)
+    );
+  }, [user, roleLinks]);
+
+  const isActive = (path: string) =>
+    location.pathname === path;
 
   const handleLogout = () => {
     logout();
@@ -94,6 +132,7 @@ const Header = () => {
 
         {/* ================= DESKTOP NAV ================= */}
         <nav className="hidden items-center gap-1 lg:flex">
+
           {baseLinks.map((link) => (
             <Link
               key={link.to}
@@ -126,29 +165,22 @@ const Header = () => {
             </Link>
           ) : (
             <>
-              {/* Profile */}
-              <Link
-                to="/profile"
-                className={`ml-4 rounded-md px-4 py-2 text-sm font-semibold transition ${
-                  scrolled
-                    ? "bg-primary text-primary-foreground hover:opacity-90"
-                    : "bg-white/10 text-primary-foreground hover:bg-white/20"
-                }`}
-              >
-                {t("profile.tabs.profile")}
-              </Link>
-
-              {/* Admin Panel */}
-              {isAdmin && (
+              {allowedRoleLinks.map((link) => (
                 <Link
-                  to="/admin"
-                  className="ml-3 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition"
+                  key={link.to}
+                  to={link.to}
+                  className={`ml-4 rounded-md px-4 py-2 text-sm font-semibold transition ${
+                    link.highlight
+                      ? "bg-indigo-600 text-white hover:opacity-90"
+                      : scrolled
+                      ? "bg-primary text-primary-foreground hover:opacity-90"
+                      : "bg-white/10 text-primary-foreground hover:bg-white/20"
+                  }`}
                 >
-                  Admin
+                  {link.label}
                 </Link>
-              )}
+              ))}
 
-              {/* Logout */}
               <button
                 onClick={handleLogout}
                 className={`ml-3 text-sm transition ${
@@ -196,6 +228,7 @@ const Header = () => {
             className="overflow-hidden border-t border-border bg-background lg:hidden"
           >
             <nav className="container mx-auto flex flex-col gap-2 px-4 py-4">
+
               {baseLinks.map((link) => (
                 <Link
                   key={link.to}
@@ -217,23 +250,20 @@ const Header = () => {
                 </Link>
               ) : (
                 <>
-                  <Link
-                    to="/profile"
-                    onClick={closeMobile}
-                    className="rounded-md bg-primary px-4 py-3 text-sm text-primary-foreground"
-                  >
-                    {t("profile.tabs.profile")}
-                  </Link>
-
-                  {isAdmin && (
+                  {allowedRoleLinks.map((link) => (
                     <Link
-                      to="/admin"
+                      key={link.to}
+                      to={link.to}
                       onClick={closeMobile}
-                      className="rounded-md bg-indigo-600 px-4 py-3 text-sm text-white"
+                      className={`rounded-md px-4 py-3 text-sm ${
+                        link.highlight
+                          ? "bg-indigo-600 text-white"
+                          : "bg-primary text-primary-foreground"
+                      }`}
                     >
-                      Admin Panel
+                      {link.label}
                     </Link>
-                  )}
+                  ))}
 
                   <button
                     onClick={() => {

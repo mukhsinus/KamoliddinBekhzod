@@ -1,3 +1,4 @@
+// AuthContext.tsx
 import {
   createContext,
   useContext,
@@ -8,6 +9,8 @@ import {
   useRef
 } from "react";
 import api from "@/services/api";
+import { UserRole } from '@/types/roles';
+
 
 /* ======================================================
    TYPES
@@ -18,7 +21,7 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  role: UserRole;
   avatar?: string;
   age?: number;
   city?: string;

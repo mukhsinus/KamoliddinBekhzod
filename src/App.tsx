@@ -10,7 +10,6 @@ import Layout from "@/components/Layout";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 import { AuthProvider } from "@/context/AuthContext";
-import AdminRoute from "@/routes/AdminRoute";
 import AdminLayout from "@/components/admin/AdminLayout";
 
 // Public pages
@@ -31,6 +30,13 @@ import Users from "./pages/admin/Users";
 import Submissions from "./pages/admin/Submissions";
 import Logs from "./pages/admin/Logs";
 import ContestSettings from "./pages/admin/ContestSettings";
+
+
+
+import RoleProtectedRoute from "@/routes/RoleProtectedRoute";
+
+import JuryLayout from "@/components/jury/JuryLayout";
+import JuryDashboard from "@/pages/jury/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -77,9 +83,9 @@ const App = () => (
               <Route
                 path="/admin"
                 element={
-                  <AdminRoute>
+                  <RoleProtectedRoute allowed={['admin']}>
                     <AdminLayout />
-                  </AdminRoute>
+                  </RoleProtectedRoute>
                 }
               >
                 <Route index element={<Dashboard />} />
@@ -87,6 +93,20 @@ const App = () => (
                 <Route path="submissions" element={<Submissions />} />
                 <Route path="logs" element={<Logs />} />
                 <Route path="contest" element={<ContestSettings />} />
+              </Route>
+
+              {/* ============================
+                  JURY ROUTES
+              ============================ */}
+              <Route
+                path="/jury"
+                element={
+                  <RoleProtectedRoute allowed={['jury']}>
+                    <JuryLayout />
+                  </RoleProtectedRoute>
+                }
+              >
+                <Route index element={<JuryDashboard />} />
               </Route>
 
               {/* 404 */}
