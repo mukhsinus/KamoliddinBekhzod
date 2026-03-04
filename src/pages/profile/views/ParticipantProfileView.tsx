@@ -1,11 +1,15 @@
-import { useEffect, useState, useRef } from "react";
+// ParticipantProfileView.tsx
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import api from "@/services/api";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/lib/i18n";
 
 import ProfileShell from "@/components/profile/ProfileShell";
-import ProfileApplicationForm from "@/pages/ProfileApplicationForm";
+
+import ProfileInfoSection from "../sections/ProfileInfoSection";
+import ApplicationsSection from "../sections/ApplicationsSection";
+import DiplomasSection from "../sections/DiplomasSection";
 
 import {
   Tabs,
@@ -13,13 +17,6 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
-
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/components/ui/card";
 
 type Tab = "profile" | "applications" | "diplomas";
 
@@ -77,7 +74,6 @@ export default function ParticipantProfileView() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] =
     useState<string>("/default-avatar.png");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -228,167 +224,34 @@ export default function ParticipantProfileView() {
           </TabsTrigger>
         </TabsList>
 
-        {/* PROFILE TAB */}
+        {/* PROFILE */}
         <TabsContent value="profile">
-          <Card>
-            <CardContent className="space-y-8">
-
-              {/* AVATAR */}
-              <div className="flex flex-col items-center">
-                <div className="relative group">
-                  <img
-                    src={avatarPreview}
-                    className="w-32 h-32 rounded-full object-cover border-4 border-[#d4af37] shadow-md"
-                  />
-
-                  {edit && (
-                    <>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            setAvatarFile(file);
-                            const blobUrl = URL.createObjectURL(file);
-                            setAvatarPreview(blobUrl);
-                          }
-                        }}
-                      />
-                      <div
-                        onClick={() => fileInputRef.current?.click()}
-                        className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white cursor-pointer transition"
-                      >
-                        Изменить
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* FORM */}
-              <div className="grid md:grid-cols-2 gap-6">
-                {(
-                  ["firstName", "lastName", "age", "city", "email", "phone"] as const
-                ).map((field) => (
-                  <input
-                    key={field}
-                    value={form[field] ?? ""}
-                    disabled={!edit}
-                    onChange={(e) =>
-                      setForm((prev) =>
-                        prev ? { ...prev, [field]: e.target.value } : prev
-                      )
-                    }
-                    className="px-4 py-3 rounded-lg border focus:ring-2 focus:ring-ring"
-                  />
-                ))}
-              </div>
-
-              <div className="flex justify-center">
-                <button
-                  onClick={() =>
-                    edit ? handleProfileSave() : setEdit(true)
-                  }
-                  disabled={saving}
-                  className="px-8 py-3 bg-[#1f2f57] text-white rounded-lg hover:bg-[#2e4379] transition disabled:opacity-50"
-                >
-                  {saving
-                    ? t("profile.saving")
-                    : edit
-                    ? t("profile.save")
-                    : t("profile.edit")}
-                </button>
-              </div>
-
-              <PasswordChangeSection />
-
-            </CardContent>
-          </Card>
+          <ProfileInfoSection
+            form={form}
+            setForm={setForm}
+            edit={edit}
+            setEdit={setEdit}
+            saving={saving}
+            handleProfileSave={handleProfileSave}
+            avatarPreview={avatarPreview}
+            setAvatarFile={setAvatarFile}
+            setAvatarPreview={setAvatarPreview}
+          />
+          <PasswordChangeSection />
         </TabsContent>
 
-        {/* APPLICATIONS TAB */}
+        {/* APPLICATIONS */}
         <TabsContent value="applications">
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                {t("profile.tabs.applications")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-
-              {apps.length === 0 ? (
-                <p className="text-muted-foreground">
-                  {t("profile.applications.empty")}
-                </p>
-              ) : (
-                apps.map((app) => (
-                  <div
-                    key={app._id}
-                    className="border-b pb-4"
-                  >
-                    <div className="font-medium">
-                      {app.nomination}
-                    </div>
-
-                    {app.workDescription && (
-                      <div className="text-sm text-muted-foreground mt-1">
-                        {app.workDescription}
-                      </div>
-                    )}
-
-                    <div className="text-sm text-muted-foreground mt-1">
-                      {t("profile.applications.status")}: {app.status}
-                    </div>
-
-                    <div className="text-xs text-muted-foreground mt-1">
-                      {new Date(app.createdAt).toLocaleDateString()}
-                    </div>
-                  </div>
-                ))
-              )}
-
-            </CardContent>
-          </Card>
-
-          <div className="mt-10">
-            <ProfileApplicationForm onSuccess={refreshSubmissions} />
-          </div>
+          <ApplicationsSection
+            apps={apps}
+            refreshSubmissions={refreshSubmissions}
+          />
         </TabsContent>
 
-        {/* DIPLOMAS TAB */}
+        {/* DIPLOMAS */}
         <TabsContent value="diplomas">
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                {t("profile.diplomas.title")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-
-              {diplomas.map((d) => (
-                <div
-                  key={d._id}
-                  className="flex justify-between border-b pb-4"
-                >
-                  <span>{d.title}</span>
-                  <a
-                    href={d.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#1f2f57] font-semibold"
-                  >
-                    {t("profile.diplomas.download")}
-                  </a>
-                </div>
-              ))}
-
-            </CardContent>
-          </Card>
+          <DiplomasSection diplomas={diplomas} />
         </TabsContent>
-
       </Tabs>
     </ProfileShell>
   );

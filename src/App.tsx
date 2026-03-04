@@ -31,12 +31,14 @@ import Submissions from "./pages/admin/Submissions";
 import Logs from "./pages/admin/Logs";
 import ContestSettings from "./pages/admin/ContestSettings";
 
-
+// Jury pages
+import JurySubmissions from "@/pages/jury/Submissions";
+import JuryMyReviews from "@/pages/jury/MyReviews";
+import JuryReview from "@/pages/jury/Review";
+import JuryDashboard from "@/pages/jury/Dashboard";
 
 import RoleProtectedRoute from "@/routes/RoleProtectedRoute";
-
 import JuryLayout from "@/components/jury/JuryLayout";
-import JuryDashboard from "@/pages/jury/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -107,6 +109,9 @@ const App = () => (
                 }
               >
                 <Route index element={<JuryDashboard />} />
+                <Route path="submissions" element={<JurySubmissions />} />
+                <Route path="submissions/:id" element={<JuryReview />} />
+                <Route path="reviews" element={<JuryMyReviews />} />
               </Route>
 
               {/* 404 */}

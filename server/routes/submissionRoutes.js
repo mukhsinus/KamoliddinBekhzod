@@ -43,6 +43,7 @@ router.post('/', auth, upload.array('works', 10), async (req, res) => {
     }
 
     const nominationDoc = await Nomination.findOne({ slug: nomination });
+
     if (!nominationDoc) {
       return res.status(404).json({ error: 'Nomination not found' });
     }
@@ -76,7 +77,6 @@ router.post('/', auth, upload.array('works', 10), async (req, res) => {
       works
     });
 
-    // 🔹 LOG
     await ActionLog.create({
       user: req.user.userId,
       action: 'create_submission',
@@ -96,6 +96,7 @@ router.post('/', auth, upload.array('works', 10), async (req, res) => {
 ======================================== */
 router.get('/me', auth, async (req, res) => {
   try {
+
     const submissions = await Submission.find({
       user: req.user.userId
     }).sort('-createdAt');
@@ -108,10 +109,41 @@ router.get('/me', auth, async (req, res) => {
 });
 
 /* ========================================
+   GET SINGLE SUBMISSION (JURY / ADMIN)
+   Needed for jury review page
+======================================== */
+router.get(
+  '/:id',
+  auth,
+  requireRole('jury', 'admin'),
+  async (req, res) => {
+    try {
+
+      if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ error: 'Invalid ID' });
+      }
+
+      const submission = await Submission.findById(req.params.id)
+        .populate('user', 'firstName lastName email');
+
+      if (!submission) {
+        return res.status(404).json({ error: 'Submission not found' });
+      }
+
+      res.json(submission);
+
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+
+/* ========================================
    UPDATE SUBMISSION
 ======================================== */
 router.put('/:id', auth, upload.array('works', 10), async (req, res) => {
   try {
+
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ error: 'Invalid ID' });
     }
@@ -127,6 +159,7 @@ router.put('/:id', auth, upload.array('works', 10), async (req, res) => {
     }
 
     const settings = await ContestSettings.findOne();
+
     if (settings && settings.phase !== 'submission') {
       return res.status(403).json({
         error: 'Editing is closed'
@@ -161,7 +194,6 @@ router.put('/:id', auth, upload.array('works', 10), async (req, res) => {
 
     await submission.save();
 
-    // 🔹 LOG
     await ActionLog.create({
       user: req.user.userId,
       action: 'update_submission',
@@ -184,6 +216,7 @@ router.get(
   requireRole('admin'),
   async (req, res) => {
     try {
+
       let {
         page = 1,
         limit = 20,
@@ -235,6 +268,7 @@ router.patch(
   requireRole('admin'),
   async (req, res) => {
     try {
+
       const { status } = req.body;
 
       if (!['pending', 'approved', 'rejected'].includes(status)) {
@@ -254,7 +288,6 @@ router.patch(
       submission.status = status;
       await submission.save();
 
-      // 🔹 LOG
       await ActionLog.create({
         user: req.user.userId,
         action: 'change_submission_status',

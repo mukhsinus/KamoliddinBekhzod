@@ -1,3 +1,4 @@
+// ContestSettings.js
 const mongoose = require('mongoose');
 
 const contestSettingsSchema = new mongoose.Schema(

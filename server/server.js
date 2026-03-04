@@ -1,3 +1,4 @@
+// server.js
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
@@ -70,6 +71,7 @@ const authRoutes = require('./routes/authRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
 const nominationRoutes = require('./routes/nominations');
 const diplomaRoutes = require('./routes/diplomaRoutes');
+const juryRoutes = require('./routes/juryRoutes');
 
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/evaluations', evaluationRoutes);
@@ -77,9 +79,14 @@ app.use('/api/contest', contestRoutes);
 app.use('/api/logs', logRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/nominations', nominationRoutes);
 app.use('/api/diplomas', diplomaRoutes);
+
+/* JURY PANEL ROUTES */
+
+app.use('/api/jury', juryRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });

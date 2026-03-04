@@ -1,24 +1,45 @@
-import { useAuth } from '@/context/AuthContext';
-import ParticipantProfileView from './profile/views/ParticipantProfileView';
-import JuryProfileView from './profile/views/JuryProfileView';
-import AdminProfileView from './profile/views/AdminProfileView';
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+
+import ParticipantProfileView from "./profile/views/ParticipantProfileView";
+import JuryProfileView from "./profile/views/JuryProfileView";
+import AdminProfileView from "./profile/views/AdminProfileView";
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, loading, initialized } = useAuth();
 
-  if (!user) return null;
+  /* ================= BOOTSTRAP LOADING ================= */
+
+  if (!initialized || loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-muted-foreground animate-pulse">
+          Loading...
+        </div>
+      </div>
+    );
+  }
+
+  /* ================= UNAUTHORIZED ================= */
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  /* ================= ROLE SWITCH ================= */
 
   switch (user.role) {
-    case 'participant':
+    case "participant":
       return <ParticipantProfileView />;
 
-    case 'jury':
+    case "jury":
       return <JuryProfileView />;
 
-    case 'admin':
+    case "admin":
       return <AdminProfileView />;
 
     default:
-      return null;
+      // неизвестная роль — безопасный fallback
+      return <Navigate to="/" replace />;
   }
 }

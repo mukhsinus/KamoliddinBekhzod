@@ -1,27 +1,35 @@
 // evaluationRoutes.js
 const express = require('express');
 const mongoose = require('mongoose');
+
 const Evaluation = require('../models/Evaluation');
 const Submission = require('../models/Submission');
 const ContestSettings = require('../models/ContestSettings');
 const ActionLog = require('../models/ActionLog');
+
 const auth = require('../middleware/authMiddleware');
 const requireRole = require('../middleware/requireRole');
 
 const router = express.Router();
 
 /* ========================================
-   JURY: PUT / UPDATE SCORE
-   Only during evaluation phase
+   CREATE OR UPDATE JURY SCORE
+   POST /api/evaluations/:submissionId
 ======================================== */
+
 router.post(
   '/:submissionId',
   auth,
   requireRole('jury'),
   async (req, res) => {
     try {
+
       const { score, comment } = req.body;
       const { submissionId } = req.params;
+
+      /* ===============================
+         VALIDATE SCORE
+      =============================== */
 
       if (typeof score !== 'number' || score < 0 || score > 100) {
         return res.status(400).json({
@@ -29,17 +37,39 @@ router.post(
         });
       }
 
+      if (!mongoose.Types.ObjectId.isValid(submissionId)) {
+        return res.status(400).json({
+          error: 'Invalid submission ID'
+        });
+      }
+
+      /* ===============================
+         CONTEST PHASE CHECK
+      =============================== */
+
       const settings = await ContestSettings.findOne();
+
       if (!settings || settings.phase !== 'evaluation') {
         return res.status(403).json({
           error: 'Evaluation phase is not active'
         });
       }
 
+      /* ===============================
+         CHECK SUBMISSION
+      =============================== */
+
       const submission = await Submission.findById(submissionId);
+
       if (!submission) {
-        return res.status(404).json({ error: 'Submission not found' });
+        return res.status(404).json({
+          error: 'Submission not found'
+        });
       }
+
+      /* ===============================
+         PREVENT SELF REVIEW
+      =============================== */
 
       if (submission.user.toString() === req.user.userId) {
         return res.status(403).json({
@@ -47,12 +77,19 @@ router.post(
         });
       }
 
+      /* ===============================
+         CREATE OR UPDATE EVALUATION
+      =============================== */
+
       const evaluation = await Evaluation.findOneAndUpdate(
         {
           submission: submissionId,
           jury: req.user.userId
         },
-        { score, comment },
+        {
+          score,
+          comment
+        },
         {
           new: true,
           upsert: true,
@@ -60,7 +97,10 @@ router.post(
         }
       );
 
-      // 🔹 LOG
+      /* ===============================
+         ACTION LOG
+      =============================== */
+
       await ActionLog.create({
         user: req.user.userId,
         action: 'evaluate_submission',
@@ -71,27 +111,38 @@ router.post(
       res.json(evaluation);
 
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({
+        error: err.message
+      });
     }
   }
 );
 
 /* ========================================
-   GET EVALUATIONS FOR SUBMISSION
-   - Admin: always allowed
-   - Jury: always allowed
-   - Participant: only when contest finished
+   GET ALL EVALUATIONS FOR SUBMISSION
+   GET /api/evaluations/submission/:submissionId
 ======================================== */
+
 router.get(
   '/submission/:submissionId',
   auth,
   async (req, res) => {
     try {
+
       const { submissionId } = req.params;
 
+      if (!mongoose.Types.ObjectId.isValid(submissionId)) {
+        return res.status(400).json({
+          error: 'Invalid submission ID'
+        });
+      }
+
       const submission = await Submission.findById(submissionId);
+
       if (!submission) {
-        return res.status(404).json({ error: 'Submission not found' });
+        return res.status(404).json({
+          error: 'Submission not found'
+        });
       }
 
       const settings = await ContestSettings.findOne();
@@ -103,14 +154,16 @@ router.get(
         req.user.role === 'admin' ||
         req.user.role === 'jury';
 
-      // Если владелец заявки — проверяем фазу
+      /* ===============================
+         ACCESS CONTROL
+      =============================== */
+
       if (isOwner && (!settings || settings.phase !== 'finished')) {
         return res.status(403).json({
           error: 'Results are not published yet'
         });
       }
 
-      // Если не владелец и не staff — запрещаем
       if (!isOwner && !isStaff) {
         return res.status(403).json({
           error: 'Forbidden'
@@ -119,29 +172,45 @@ router.get(
 
       const evaluations = await Evaluation.find({
         submission: submissionId
-      }).populate('jury', 'firstName lastName');
+      })
+      .populate('jury', 'firstName lastName');
 
       res.json(evaluations);
 
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({
+        error: err.message
+      });
     }
   }
 );
 
 /* ========================================
-   GET AVERAGE SCORE (ADMIN / JURY)
+   GET AVERAGE SCORE
+   GET /api/evaluations/submission/:submissionId/average
 ======================================== */
+
 router.get(
   '/submission/:submissionId/average',
   auth,
   requireRole('admin', 'jury'),
   async (req, res) => {
     try {
+
       const { submissionId } = req.params;
 
+      if (!mongoose.Types.ObjectId.isValid(submissionId)) {
+        return res.status(400).json({
+          error: 'Invalid submission ID'
+        });
+      }
+
       const result = await Evaluation.aggregate([
-        { $match: { submission: new require('mongoose').Types.ObjectId(submissionId) } },
+        {
+          $match: {
+            submission: new mongoose.Types.ObjectId(submissionId)
+          }
+        },
         {
           $group: {
             _id: '$submission',
@@ -164,7 +233,9 @@ router.get(
       });
 
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({
+        error: err.message
+      });
     }
   }
 );
