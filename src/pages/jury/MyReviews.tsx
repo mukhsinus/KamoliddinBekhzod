@@ -1,6 +1,7 @@
 // MyReviews.tsx
 import { useEffect, useState } from "react";
 import api from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 interface Review {
   submissionTitle: string;
@@ -10,6 +11,7 @@ interface Review {
 }
 
 export default function JuryMyReviews() {
+  const { t } = useI18n();
   const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export default function JuryMyReviews() {
     <div className="space-y-6">
 
       <h2 className="text-2xl font-semibold">
-        My Reviews
+        {t('jury.myReviews')}
       </h2>
 
       <div className="bg-white border rounded-xl">

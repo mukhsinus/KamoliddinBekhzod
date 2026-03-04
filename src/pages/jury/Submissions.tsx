@@ -3,6 +3,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import api from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 interface Submission {
   _id: string;
@@ -15,6 +16,7 @@ interface Submission {
 export default function JurySubmissions() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { t } = useI18n();
 
   const {
     data,
@@ -37,7 +39,7 @@ export default function JurySubmissions() {
       <div className="space-y-8">
 
         <h1 className="text-3xl font-semibold">
-          Submissions
+          {t('jury.submissions')}
         </h1>
 
         <div className="space-y-4">
@@ -65,7 +67,7 @@ export default function JurySubmissions() {
   if (isError) {
     return (
       <div className="text-red-500">
-        Failed to load submissions
+        {t('jury.failedSubmissions')}
       </div>
     );
   }
@@ -77,7 +79,7 @@ export default function JurySubmissions() {
   if (!data || data.length === 0) {
     return (
       <div className="text-gray-500">
-        No submissions found
+        {t('jury.noSubmissions')}
       </div>
     );
   }
@@ -90,7 +92,7 @@ export default function JurySubmissions() {
     <div className="space-y-8">
 
       <h1 className="text-3xl font-semibold">
-        Submissions
+        {t('jury.submissions')}
       </h1>
 
       <div className="grid gap-4">
@@ -133,7 +135,7 @@ export default function JurySubmissions() {
               }
               className="px-4 py-2 bg-[#1f2f57] text-white rounded-md text-sm hover:opacity-90 transition"
             >
-              Review
+              {t('jury.review')}
             </button>
 
           </div>

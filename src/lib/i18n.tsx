@@ -170,6 +170,41 @@ const translations = {
 
     'profile.form.success.title': 'Заявка отправлена',
     'profile.form.success.subtitle': 'Ваша работа успешно отправлена на рассмотрение жюри.',
+  
+    // jury panel
+    'jury.title': 'Панель жюри',
+    'jury.subtitle': 'Оценка работ конкурса',
+
+    'jury.dashboard': 'Панель',
+    'jury.submissions': 'Заявки',
+    'jury.myReviews': 'Мои оценки',
+    'jury.review': 'Оценить',
+
+    'jury.totalSubmissions': 'Всего заявок',
+    'jury.reviewed': 'Оценено',
+    'jury.pending': 'Ожидают оценки',
+    'jury.averageScore': 'Средний балл',
+
+    'jury.loadingDashboard': 'Загрузка панели...',
+    'jury.loading': 'Загрузка...',
+
+    'jury.noSubmissions': 'Заявок пока нет',
+    'jury.failedSubmissions': 'Ошибка загрузки заявок',
+
+    'jury.reviewSubmission': 'Оценка работы',
+    'jury.score': 'Баллы',
+    'jury.comment': 'Комментарий',
+
+    'jury.submitReview': 'Отправить оценку',
+    'jury.saving': 'Сохранение...',
+
+    'jury.reviewSaved': 'Оценка сохранена',
+    'jury.reviewError': 'Ошибка сохранения оценки',
+
+    'jury.backProfile': 'Назад в профиль',
+
+    'jury.nomination': 'Номинация',
+    'jury.submissionWork': 'Работа участника',
   },
 
 
@@ -330,6 +365,41 @@ const translations = {
 
     'profile.form.success.title': 'Application Submitted',
     'profile.form.success.subtitle': 'Your work has been successfully submitted for jury review.',
+  
+    // jury panel
+    'jury.title': 'Jury Panel',
+    'jury.subtitle': 'Contest evaluation',
+
+    'jury.dashboard': 'Dashboard',
+    'jury.submissions': 'Submissions',
+    'jury.myReviews': 'My Reviews',
+    'jury.review': 'Review',
+
+    'jury.totalSubmissions': 'Total Submissions',
+    'jury.reviewed': 'Reviewed',
+    'jury.pending': 'Pending',
+    'jury.averageScore': 'Average Score',
+
+    'jury.loadingDashboard': 'Loading dashboard...',
+    'jury.loading': 'Loading...',
+
+    'jury.noSubmissions': 'No submissions yet',
+    'jury.failedSubmissions': 'Failed to load submissions',
+
+    'jury.reviewSubmission': 'Review submission',
+    'jury.score': 'Score',
+    'jury.comment': 'Comment',
+
+    'jury.submitReview': 'Submit review',
+    'jury.saving': 'Saving...',
+
+    'jury.reviewSaved': 'Review saved',
+    'jury.reviewError': 'Failed to save review',
+
+    'jury.backProfile': 'Back to profile',
+
+    'jury.nomination': 'Nomination',
+    'jury.submissionWork': 'Submission work',
   },
 } as const;
 

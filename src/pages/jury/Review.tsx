@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import api from "@/services/api";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 interface Submission {
   _id: string;
@@ -26,6 +27,7 @@ export default function JuryReview() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { t } = useI18n();
 
   const [score, setScore] = useState<number>(50);
   const [comment, setComment] = useState("");
@@ -80,7 +82,7 @@ export default function JuryReview() {
       return res.data;
     },
     onSuccess: () => {
-      toast.success("Review saved");
+      toast.success(t("jury.reviewSaved"));
 
       queryClient.invalidateQueries({
         queryKey: ["jury-submissions"]
@@ -89,11 +91,11 @@ export default function JuryReview() {
       navigate("/jury/submissions");
     },
     onError: () => {
-      toast.error("Failed to save review");
+      toast.error(t("jury.reviewError"));
     }
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>{t('jury.loading')}</div>;
   if (!submission) return null;
 
   return (
@@ -103,7 +105,7 @@ export default function JuryReview() {
 
       <div>
         <h1 className="text-3xl font-semibold">
-          Review submission
+          {t('jury.reviewSubmission')}
         </h1>
       </div>
 
@@ -117,7 +119,7 @@ export default function JuryReview() {
           </div>
 
           <div className="text-sm text-gray-500">
-            Nomination: {submission.nomination}
+            {t("jury.nomination")}: {submission.nomination}
           </div>
         </div>
 
@@ -138,7 +140,7 @@ export default function JuryReview() {
                 src={`${import.meta.env.VITE_API_URL}${work}`}
                 loading="lazy"
                 className="rounded-lg border object-cover"
-                alt="submission work"
+                alt={t("jury.submissionWork")}
               />
             ))}
 
@@ -152,7 +154,7 @@ export default function JuryReview() {
       <div className="bg-white border rounded-xl p-8 space-y-6">
 
         <h2 className="text-xl font-semibold">
-          Score
+          {t('jury.score')}
         </h2>
 
         <input
@@ -169,7 +171,7 @@ export default function JuryReview() {
         </div>
 
         <textarea
-          placeholder="Comment"
+          placeholder={t('jury.comment')}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           className="w-full border rounded-lg p-3 min-h-[120px]"
@@ -180,7 +182,7 @@ export default function JuryReview() {
           disabled={mutation.isPending}
           className="px-6 py-3 bg-[#1f2f57] text-white rounded-lg hover:opacity-90 transition"
         >
-          {mutation.isPending ? "Saving..." : "Submit review"}
+          {mutation.isPending ? t('jury.saving') : t('jury.submitReview')}
         </button>
 
       </div>

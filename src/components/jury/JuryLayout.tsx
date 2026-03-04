@@ -20,23 +20,23 @@ export default function JuryLayout() {
       {/* SIDEBAR */}
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
         <div className="px-6 py-6 border-b">
-          <h2 className="text-lg font-semibold">Jury Panel</h2>
+          <h2 className="text-lg font-semibold">{t('jury.title')}</h2>
           <p className="text-xs text-gray-500 mt-1">
-            Contest evaluation
+            {t('jury.subtitle')}
           </p>
         </div>
 
         <nav className="flex-1 px-4 py-6 space-y-2">
           <NavLink to="/jury" end className={linkClass}>
-            Dashboard
+            {t('jury.dashboard')}
           </NavLink>
 
           <NavLink to="/jury/submissions" className={linkClass}>
-            Submissions
+            {t('jury.submissions')}
           </NavLink>
 
           <NavLink to="/jury/reviews" className={linkClass}>
-            My Reviews
+            {t('jury.myReviews')}
           </NavLink>
         </nav>
 
@@ -45,7 +45,7 @@ export default function JuryLayout() {
             onClick={() => navigate("/profile")}
             className="w-full text-sm text-gray-600 hover:text-gray-900"
           >
-            Back to profile
+            {t('jury.backProfile')}
           </button>
         </div>
       </aside>
@@ -54,7 +54,7 @@ export default function JuryLayout() {
       <div className="flex-1 flex flex-col">
         {/* HEADER */}
         <header className="h-16 bg-white border-b flex items-center justify-between px-6">
-          <h1 className="text-lg font-semibold">Jury Panel</h1>
+          <h1 className="text-lg font-semibold">{t('jury.title')}</h1>
 
           <div className="text-sm text-gray-600">
             {user?.firstName} {user?.lastName}

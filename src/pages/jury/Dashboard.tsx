@@ -1,5 +1,7 @@
+// jury/Dashboard.tsx
 import { useEffect, useState } from "react";
 import api from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 interface Stats {
   total: number;
@@ -9,6 +11,7 @@ interface Stats {
 }
 
 export default function JuryDashboard() {
+  const { t } = useI18n();
   const [stats, setStats] = useState<Stats>({
     total: 0,
     reviewed: 0,
@@ -34,35 +37,35 @@ export default function JuryDashboard() {
   }, []);
 
   if (loading) {
-    return <div>Loading dashboard...</div>;
+    return <div>{t('jury.loadingDashboard')}</div>;
   }
 
   return (
     <div className="space-y-8">
 
       <h2 className="text-2xl font-semibold">
-        Jury Dashboard
+        {t('jury.title')}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 
         <StatCard
-          title="Total Submissions"
+          title={t('jury.totalSubmissions')}
           value={stats.total}
         />
 
         <StatCard
-          title="Reviewed"
+          title={t('jury.reviewed')}
           value={stats.reviewed}
         />
 
         <StatCard
-          title="Pending"
+          title={t('jury.pending')}
           value={stats.pending}
         />
 
         <StatCard
-          title="Average Score"
+          title={t('jury.averageScore')}
           value={stats.averageScore}
         />
 
