@@ -3,7 +3,7 @@ const express = require('express');
 const ContestSettings = require('../models/ContestSettings');
 const auth = require('../middleware/authMiddleware');
 const requireRole = require('../middleware/requireRole');
-
+const ActionLog = require('../models/ActionLog');
 const router = express.Router();
 
 /* ========================================

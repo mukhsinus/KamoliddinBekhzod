@@ -1,4 +1,4 @@
-// AdminLayout.tsx
+// components/admin/AdminLayout.tsx
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Menu, X, LogOut } from "lucide-react";

@@ -1,4 +1,4 @@
-// Submissions.tsx
+// pages/admin/Submissions.tsx
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -10,11 +10,11 @@ interface Submission {
   nomination: string;
   status: "pending" | "approved" | "rejected";
   createdAt: string;
-  user: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
+  user?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+  } | null;
 }
 
 interface PaginatedResponse {
@@ -69,8 +69,9 @@ export default function Submissions() {
               <tr key={submission._id} className="border-b">
 
                 <td className="px-4 py-3">
-                  {submission.user.firstName}{" "}
-                  {submission.user.lastName}
+                    {submission.user
+                      ? `${submission.user.firstName} ${submission.user.lastName}`
+                      : "Deleted user"}
                 </td>
 
                 <td className="px-4 py-3">

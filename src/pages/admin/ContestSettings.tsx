@@ -1,4 +1,4 @@
-// ContestSettings.tsx
+// pages/admin/ContestSettings.tsx
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import api from "@/services/api";
@@ -27,6 +27,9 @@ export default function ContestSettings() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["admin-contest-settings"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["admin-phase-indicator"]
       });
     }
   });
@@ -81,12 +84,16 @@ export default function ContestSettings() {
 
           <select
             value={phase}
-            onChange={(e) =>
+            onChange={(e) => {
+              const newPhase =
+                e.target.value as ContestSettings["phase"];
+
+              setPhase(newPhase);
+
               updateSettings.mutate({
-                phase:
-                  e.target.value as ContestSettings["phase"]
-              })
-            }
+                phase: newPhase
+              });
+            }}
             className="border rounded-lg px-4 py-2"
           >
             <option value="submission">

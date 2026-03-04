@@ -1,4 +1,4 @@
-// SubmissionDetails.tsx
+// pages/admin/SubmissionDetails.tsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/services/api";
@@ -62,9 +62,15 @@ export default function SubmissionDetails() {
       });
     },
     onSuccess: () => {
+
       queryClient.invalidateQueries({
         queryKey: ["admin-submission", id]
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["admin-submissions"]
+      });
+
     }
   });
 
@@ -146,7 +152,7 @@ export default function SubmissionDetails() {
               className="block border rounded-lg overflow-hidden"
             >
               <img
-                src={work}
+                src={`${import.meta.env.VITE_API_URL}${work}`}
                 alt="work"
                 className="w-full h-40 object-cover"
               />
