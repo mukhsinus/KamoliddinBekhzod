@@ -1,6 +1,6 @@
-// userRoutes.js
 const express = require('express');
 const User = require('../models/User');
+const ActionLog = require('../models/ActionLog');
 const auth = require('../middleware/authMiddleware');
 const requireRole = require('../middleware/requireRole');
 
@@ -19,9 +19,10 @@ router.get(
         .select('-password')
         .sort('-createdAt');
 
-      res.json(users);
+      return res.json(users);
+
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      return res.status(500).json({ error: err.message });
     }
   }
 );
@@ -39,13 +40,17 @@ router.get(
         .select('-password');
 
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({
+          error: 'User not found'
+        });
       }
 
-      res.json(user);
+      return res.json(user);
 
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      return res.status(500).json({
+        error: err.message
+      });
     }
   }
 );
@@ -59,18 +64,25 @@ router.patch(
   requireRole('admin'),
   async (req, res) => {
     try {
+
       const { role } = req.body;
       const allowedRoles = ['participant', 'jury', 'admin'];
 
       if (!allowedRoles.includes(role)) {
-        return res.status(400).json({ error: 'Invalid role' });
+        return res.status(400).json({
+          error: 'Invalid role'
+        });
       }
 
       const user = await User.findById(req.params.id);
+
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({
+          error: 'User not found'
+        });
       }
 
+      // нельзя снять админку с себя
       if (
         user._id.toString() === req.user.userId &&
         role !== 'admin'
@@ -85,15 +97,18 @@ router.patch(
       user.role = role;
       await user.save();
 
-      // 🔹 LOG
+      // лог
       await ActionLog.create({
         user: req.user.userId,
         action: 'change_user_role',
         targetId: user._id,
-        meta: { oldRole, newRole: role }
+        meta: {
+          oldRole,
+          newRole: role
+        }
       });
 
-      res.json({
+      return res.json({
         message: 'Role updated successfully',
         user: {
           _id: user._id,
@@ -103,7 +118,9 @@ router.patch(
       });
 
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      return res.status(500).json({
+        error: err.message
+      });
     }
   }
 );
@@ -117,6 +134,7 @@ router.patch(
   requireRole('admin'),
   async (req, res) => {
     try {
+
       const { isActive } = req.body;
 
       if (typeof isActive !== 'boolean') {
@@ -128,10 +146,12 @@ router.patch(
       const user = await User.findById(req.params.id);
 
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({
+          error: 'User not found'
+        });
       }
 
-      // Нельзя деактивировать самого себя
+      // нельзя деактивировать себя
       if (user._id.toString() === req.user.userId) {
         return res.status(400).json({
           error: 'You cannot deactivate yourself'
@@ -141,7 +161,17 @@ router.patch(
       user.isActive = isActive;
       await user.save();
 
-      res.json({
+      // лог
+      await ActionLog.create({
+        user: req.user.userId,
+        action: 'change_user_status',
+        targetId: user._id,
+        meta: {
+          isActive
+        }
+      });
+
+      return res.json({
         message: 'User status updated',
         user: {
           _id: user._id,
@@ -149,16 +179,10 @@ router.patch(
         }
       });
 
-      // 🔹 LOG
-      await ActionLog.create({
-        user: req.user.userId,
-        action: 'change_user_status',
-        targetId: user._id,
-        meta: { isActive }
-      });
-
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      return res.status(500).json({
+        error: err.message
+      });
     }
   }
 );
