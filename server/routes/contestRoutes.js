@@ -3,7 +3,7 @@ const express = require('express');
 const ContestSettings = require('../models/ContestSettings');
 const auth = require('../middleware/authMiddleware');
 const requireRole = require('../middleware/requireRole');
-const ActionLog = require('../models/ActionLog');
+const logAction = require('../utils/logAction');
 const router = express.Router();
 
 /* ========================================
@@ -33,7 +33,7 @@ router.patch(
   requireRole('admin'),
   async (req, res) => {
     try {
-      const { phase } = req.body;
+      const { phase } = req.body || {};
 
       if (!['submission','evaluation','finished'].includes(phase)) {
         return res.status(400).json({ error: 'Invalid phase' });
@@ -50,10 +50,13 @@ router.patch(
       await settings.save();
 
       // 🔹 LOG
-      await ActionLog.create({
-        user: req.user.userId,
+      await logAction({
+        userId: req.user.userId,
         action: 'change_contest_phase',
-        meta: { oldPhase, newPhase: phase }
+        meta: {
+          oldPhase,
+          newPhase: phase
+        }
       });
 
       res.json(settings);

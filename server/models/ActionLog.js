@@ -1,6 +1,8 @@
+// server/models/ActionLog.js
 const mongoose = require('mongoose');
 
 const actionLogSchema = new mongoose.Schema({
+
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -11,13 +13,16 @@ const actionLogSchema = new mongoose.Schema({
     required: true
   },
 
-  targetId: {
-    type: mongoose.Schema.Types.ObjectId
+  target: {
+    firstName: String,
+    lastName: String,
+    email: String
   },
 
   meta: {
     type: Object
   }
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('ActionLog', actionLogSchema);

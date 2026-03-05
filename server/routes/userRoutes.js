@@ -1,8 +1,10 @@
 const express = require('express');
 const User = require('../models/User');
+const logAction = require('../utils/logAction');
 const ActionLog = require('../models/ActionLog');
 const auth = require('../middleware/authMiddleware');
 const requireRole = require('../middleware/requireRole');
+const asyncHandler = require('../middleware/asyncHandler');
 
 const router = express.Router();
 
@@ -13,18 +15,15 @@ router.get(
   '/admin/all',
   auth,
   requireRole('admin'),
-  async (req, res) => {
-    try {
-      const users = await User.find()
-        .select('-password')
-        .sort('-createdAt');
+  asyncHandler(async (req, res) => {
 
-      return res.json(users);
+    const users = await User.find()
+      .select('-password')
+      .sort('-createdAt');
 
-    } catch (err) {
-      return res.status(500).json({ error: err.message });
-    }
-  }
+    res.json(users);
+
+  })
 );
 
 /* ========================================
@@ -98,14 +97,15 @@ router.patch(
       await user.save();
 
       // лог
-      await ActionLog.create({
-        user: req.user.userId,
-        action: 'change_user_role',
-        targetId: user._id,
-        meta: {
-          oldRole,
-          newRole: role
-        }
+      await logAction({
+        userId: req.user.userId,
+        action: 'change_user_status',
+        target: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email
+        },
+        meta: { isActive }
       });
 
       return res.json({
@@ -165,8 +165,9 @@ router.patch(
       await ActionLog.create({
         user: req.user.userId,
         action: 'change_user_status',
-        targetId: user._id,
         meta: {
+          targetName: `${user.firstName} ${user.lastName}`,
+          targetEmail: user.email,
           isActive
         }
       });

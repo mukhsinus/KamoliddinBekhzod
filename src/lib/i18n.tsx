@@ -205,6 +205,24 @@ const translations = {
 
     'jury.nomination': 'Номинация',
     'jury.submissionWork': 'Работа участника',
+
+    // admin panel
+    'admin.logs.title': 'Системные логи',
+    'admin.logs.user': 'Пользователь',
+    'admin.logs.action': 'Действие',
+    'admin.logs.target': 'Объект',
+    'admin.logs.meta': 'Данные',
+    'admin.logs.date': 'Дата',
+
+    'admin.logs.filter.action': 'Действие...',
+    'admin.logs.filter.user': 'ID пользователя...',
+
+    'admin.pagination.page': 'Страница',
+    'admin.pagination.of': 'из',
+
+    'admin.prev': 'Назад',
+    'admin.next': 'Далее',
+    'admin.system': 'Система'
   },
 
 
@@ -400,6 +418,24 @@ const translations = {
 
     'jury.nomination': 'Nomination',
     'jury.submissionWork': 'Submission work',
+
+    // admin panel
+    'admin.logs.title': 'System Logs',
+    'admin.logs.user': 'User',
+    'admin.logs.action': 'Action',
+    'admin.logs.target': 'Target',
+    'admin.logs.meta': 'Meta',
+    'admin.logs.date': 'Date',
+
+    'admin.logs.filter.action': 'Action...',
+    'admin.logs.filter.user': 'User ID...',
+
+    'admin.pagination.page': 'Page',
+    'admin.pagination.of': 'of',
+
+    'admin.prev': 'Prev',
+    'admin.next': 'Next',
+    'admin.system': 'System'
   },
 } as const;
 

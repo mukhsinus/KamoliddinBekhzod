@@ -1,13 +1,16 @@
-// submissionRoutes.js
 const express = require('express');
 const mongoose = require('mongoose');
+
 const Submission = require('../models/Submission');
 const Nomination = require('../models/Nomination');
 const ContestSettings = require('../models/ContestSettings');
+const User = require('../models/User');
+
 const auth = require('../middleware/authMiddleware');
 const requireRole = require('../middleware/requireRole');
 const upload = require('../middleware/worksUpload');
-const ActionLog = require('../models/ActionLog');
+
+const logAction = require('../utils/logAction');
 
 const router = express.Router();
 
@@ -16,6 +19,9 @@ const router = express.Router();
 ======================================== */
 router.post('/', auth, upload.array('works', 10), async (req, res) => {
   try {
+
+    const user = await User.findById(req.user.userId);
+
     const settings = await ContestSettings.findOne();
 
     if (settings && settings.phase !== 'submission') {
@@ -77,10 +83,14 @@ router.post('/', auth, upload.array('works', 10), async (req, res) => {
       works
     });
 
-    await ActionLog.create({
-      user: req.user.userId,
+    await logAction({
+      userId: req.user.userId,
       action: 'create_submission',
-      targetId: submission._id,
+      target: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      },
       meta: { nomination }
     });
 
@@ -110,7 +120,6 @@ router.get('/me', auth, async (req, res) => {
 
 /* ========================================
    GET SINGLE SUBMISSION (JURY / ADMIN)
-   Needed for jury review page
 ======================================== */
 router.get(
   '/:id',
@@ -143,6 +152,8 @@ router.get(
 ======================================== */
 router.put('/:id', auth, upload.array('works', 10), async (req, res) => {
   try {
+
+    const user = await User.findById(req.user.userId);
 
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ error: 'Invalid ID' });
@@ -194,10 +205,15 @@ router.put('/:id', auth, upload.array('works', 10), async (req, res) => {
 
     await submission.save();
 
-    await ActionLog.create({
-      user: req.user.userId,
+    await logAction({
+      userId: req.user.userId,
       action: 'update_submission',
-      targetId: submission._id
+      target: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      },
+      meta: { submissionId: submission._id }
     });
 
     res.json(submission);
@@ -269,6 +285,8 @@ router.patch(
   async (req, res) => {
     try {
 
+      const user = await User.findById(req.user.userId);
+
       const { status } = req.body;
 
       if (!['pending', 'approved', 'rejected'].includes(status)) {
@@ -288,11 +306,18 @@ router.patch(
       submission.status = status;
       await submission.save();
 
-      await ActionLog.create({
-        user: req.user.userId,
+      await logAction({
+        userId: req.user.userId,
         action: 'change_submission_status',
-        targetId: submission._id,
-        meta: { newStatus: status }
+        target: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email
+        },
+        meta: {
+          submissionId: submission._id,
+          newStatus: status
+        }
       });
 
       res.json(submission);

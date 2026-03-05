@@ -1,12 +1,12 @@
-// Logs.tsx
+// src/pages/admin/Logs.tsx
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import api from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 interface Log {
   _id: string;
   action: string;
-  targetId?: string;
   meta?: any;
   createdAt: string;
   user?: {
@@ -27,7 +27,39 @@ interface PaginatedResponse {
   };
 }
 
+/* ========================================
+   FORMAT META FOR ADMIN
+======================================== */
+
+function formatMeta(action: string, meta: any) {
+  if (!meta) return "-";
+
+  switch (action) {
+
+    case "change_user_status":
+      return meta.isActive ? "User activated" : "User deactivated";
+
+    case "change_contest_phase":
+      return `${meta.oldPhase} → ${meta.newPhase}`;
+
+    case "evaluate_submission":
+      return `Score: ${meta.score}`;
+
+    case "create_submission":
+      return `Nomination: ${meta.nomination}`;
+
+    case "change_submission_status":
+      return `Status → ${meta.newStatus}`;
+
+    default:
+      return "-";
+  }
+}
+
 export default function Logs() {
+
+  const { t } = useI18n();
+
   const [page, setPage] = useState(1);
   const [action, setAction] = useState("");
   const [userId, setUserId] = useState("");
@@ -37,6 +69,7 @@ export default function Logs() {
   const { data, isLoading } = useQuery<PaginatedResponse>({
     queryKey: ["admin-logs", page, action, userId, from, to],
     queryFn: async () => {
+
       const res = await api.get("/api/logs/admin", {
         params: {
           page,
@@ -47,6 +80,7 @@ export default function Logs() {
           to: to || undefined
         }
       });
+
       return res.data;
     }
   });
@@ -66,17 +100,16 @@ export default function Logs() {
   return (
     <div className="space-y-8">
 
-      <h1 className="text-3xl font-bold">System Logs</h1>
+      <h1 className="text-3xl font-bold">
+        {t('admin.logs.title')}
+      </h1>
 
       {/* FILTERS */}
-      <div className="
-        grid gap-4
-        sm:grid-cols-2
-        lg:grid-cols-4
-      ">
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
         <input
-          placeholder="Action..."
+          placeholder={t('admin.logs.filter.action')}
           value={action}
           onChange={(e) => {
             setPage(1);
@@ -86,7 +119,7 @@ export default function Logs() {
         />
 
         <input
-          placeholder="User ID..."
+          placeholder={t('admin.logs.filter.user')}
           value={userId}
           onChange={(e) => {
             setPage(1);
@@ -118,73 +151,97 @@ export default function Logs() {
       </div>
 
       {/* TABLE */}
+
       <div className="bg-white border rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
+
           <table className="min-w-[800px] w-full text-left text-sm">
 
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="p-4">User</th>
-              <th className="p-4">Action</th>
-              <th className="p-4">Target</th>
-              <th className="p-4">Meta</th>
-              <th className="p-4">Date</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {data.data.map((log) => (
-              <tr key={log._id} className="border-b">
-
-                <td className="p-4">
-                  {log.user ? (
-                    <>
-                      <div className="font-medium">
-                        {log.user.firstName} {log.user.lastName}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {log.user.email}
-                      </div>
-                    </>
-                  ) : (
-                    "System"
-                  )}
-                </td>
-
-                <td className="p-4 font-medium">
-                  {log.action}
-                </td>
-
-                <td className="p-4 text-gray-600">
-                  {log.targetId || "-"}
-                </td>
-
-                <td className="p-4 text-sm text-gray-500">
-                  {log.meta
-                    ? JSON.stringify(log.meta)
-                    : "-"}
-                </td>
-
-                <td className="p-4">
-                  {new Date(log.createdAt).toLocaleString()}
-                </td>
-
+            <thead className="bg-gray-50 border-b">
+              <tr>
+                <th className="p-4">{t('admin.logs.user')}</th>
+                <th className="p-4">{t('admin.logs.action')}</th>
+                <th className="p-4">{t('admin.logs.target')}</th>
+                <th className="p-4">{t('admin.logs.meta')}</th>
+                <th className="p-4">{t('admin.logs.date')}</th>
               </tr>
-            ))}
-          </tbody>
+            </thead>
 
-        </table>
+            <tbody>
+
+              {data.data.map((log) => (
+
+                <tr key={log._id} className="border-b">
+
+                  {/* USER */}
+
+                  <td className="p-4">
+
+                    {log.user ? (
+                      <>
+                        <div className="font-medium">
+                          {log.user.firstName} {log.user.lastName}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {log.user.email}
+                        </div>
+                      </>
+                    ) : (
+                      t('admin.system')
+                    )}
+
+                  </td>
+
+                  {/* ACTION */}
+
+                  <td className="p-4 font-medium">
+                    {log.action}
+                  </td>
+
+                  {/* TARGET */}
+
+                  <td className="p-4 text-gray-600">
+
+                    {log.meta?.targetName ? (
+                      <>
+                        <div>{log.meta.targetName}</div>
+                        <div className="text-sm text-gray-500">
+                          {log.meta.targetEmail}
+                        </div>
+                      </>
+                    ) : "-"}
+                    
+                  </td>
+
+                  {/* META */}
+
+                  <td className="p-4 text-sm text-gray-500">
+                    {formatMeta(log.action, log.meta)}
+                  </td>
+
+                  {/* DATE */}
+
+                  <td className="p-4">
+                    {new Date(log.createdAt).toLocaleString()}
+                  </td>
+
+                </tr>
+
+              ))}
+
+            </tbody>
+
+          </table>
+
         </div>
       </div>
 
       {/* PAGINATION */}
-      <div className="
-        flex flex-col gap-4
-        sm:flex-row sm:items-center sm:justify-between
-      ">
+
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
         <div>
-          Page {data.pagination.page} of {data.pagination.pages}
+          {t('admin.pagination.page')} {data.pagination.page} {t('admin.pagination.of')} {data.pagination.pages}
         </div>
 
         <div className="space-x-2">
@@ -194,7 +251,7 @@ export default function Logs() {
             onClick={() => setPage((p) => p - 1)}
             className="px-3 py-1 border rounded"
           >
-            Prev
+            {t('admin.prev')}
           </button>
 
           <button
@@ -202,7 +259,7 @@ export default function Logs() {
             onClick={() => setPage((p) => p + 1)}
             className="px-3 py-1 border rounded"
           >
-            Next
+            {t('admin.next')}
           </button>
 
         </div>

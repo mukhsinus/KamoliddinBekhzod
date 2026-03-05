@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const Evaluation = require('../models/Evaluation');
 const Submission = require('../models/Submission');
 const ContestSettings = require('../models/ContestSettings');
-const ActionLog = require('../models/ActionLog');
+const logAction = require('../utils/logAction');
 
 const auth = require('../middleware/authMiddleware');
 const requireRole = require('../middleware/requireRole');
@@ -101,11 +101,13 @@ router.post(
          ACTION LOG
       =============================== */
 
-      await ActionLog.create({
-        user: req.user.userId,
+      await logAction({
+        userId: req.user.userId,
         action: 'evaluate_submission',
-        targetId: submissionId,
-        meta: { score }
+        meta: {
+          submissionId,
+          score
+        }
       });
 
       res.json(evaluation);
