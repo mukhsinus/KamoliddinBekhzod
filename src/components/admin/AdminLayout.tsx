@@ -6,8 +6,10 @@ import Sidebar from "./Sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 export default function AdminLayout() {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
 
@@ -66,7 +68,7 @@ export default function AdminLayout() {
             </button>
 
             <h1 className="font-semibold text-lg">
-              Admin Panel
+              {t('admin.sidebar.title')}
             </h1>
 
             {data?.phase && (

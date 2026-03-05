@@ -1,4 +1,6 @@
+// src/components/admin/Sidebar.tsx
 import { NavLink } from "react-router-dom";
+import { useI18n } from "@/lib/i18n";
 import {
   LayoutDashboard,
   Users,
@@ -12,6 +14,7 @@ interface Props {
 }
 
 export default function Sidebar({ closeSidebar }: Props) {
+  const { t } = useI18n();
   const linkBase =
     "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-colors";
 
@@ -27,10 +30,10 @@ export default function Sidebar({ closeSidebar }: Props) {
       {/* HEADER */}
       <div className="p-6 border-b">
         <h2 className="text-lg font-bold tracking-tight">
-          Admin Panel
+          {t('admin.sidebar.title')}
         </h2>
         <p className="text-xs text-gray-500 mt-1">
-          Management System
+          {t('admin.sidebar.subtitle')}
         </p>
       </div>
 
@@ -41,7 +44,7 @@ export default function Sidebar({ closeSidebar }: Props) {
           to="/admin"
           end
           icon={<LayoutDashboard size={18} />}
-          label="Dashboard"
+          label={t('admin.sidebar.dashboard')}
           closeSidebar={closeSidebar}
           linkBase={linkBase}
           linkActive={linkActive}
@@ -51,7 +54,7 @@ export default function Sidebar({ closeSidebar }: Props) {
         <NavItem
           to="/admin/users"
           icon={<Users size={18} />}
-          label="Users"
+          label={t('admin.sidebar.users')}
           closeSidebar={closeSidebar}
           linkBase={linkBase}
           linkActive={linkActive}
@@ -61,7 +64,7 @@ export default function Sidebar({ closeSidebar }: Props) {
         <NavItem
           to="/admin/submissions"
           icon={<FileText size={18} />}
-          label="Submissions"
+          label={t('admin.sidebar.submissions')}
           closeSidebar={closeSidebar}
           linkBase={linkBase}
           linkActive={linkActive}
@@ -71,7 +74,7 @@ export default function Sidebar({ closeSidebar }: Props) {
         <NavItem
           to="/admin/logs"
           icon={<ScrollText size={18} />}
-          label="Logs"
+          label={t('admin.sidebar.logs')}
           closeSidebar={closeSidebar}
           linkBase={linkBase}
           linkActive={linkActive}
@@ -81,7 +84,7 @@ export default function Sidebar({ closeSidebar }: Props) {
         <NavItem
           to="/admin/contest"
           icon={<Settings size={18} />}
-          label="Contest Settings"
+          label={t('admin.sidebar.contest')}
           closeSidebar={closeSidebar}
           linkBase={linkBase}
           linkActive={linkActive}
@@ -92,7 +95,7 @@ export default function Sidebar({ closeSidebar }: Props) {
 
       {/* FOOTER */}
       <div className="p-4 border-t text-xs text-gray-400">
-        © {new Date().getFullYear()} Admin System
+        © {new Date().getFullYear()} {t('admin.sidebar.footer')}
       </div>
 
     </div>

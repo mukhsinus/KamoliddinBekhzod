@@ -2,6 +2,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import api from "@/services/api";
+import { useI18n } from "@/lib/i18n";
+
 
 interface ContestSettings {
   phase: "submission" | "evaluation" | "finished";
@@ -10,6 +12,7 @@ interface ContestSettings {
 }
 
 export default function ContestSettings() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery<ContestSettings>({
@@ -72,14 +75,14 @@ export default function ContestSettings() {
   return (
     <div className="space-y-10">
       <h1 className="text-3xl font-bold">
-        Contest Settings
+        {t('admin.contest.title')}
       </h1>
 
       {/* PHASE CONTROL */}
       <div className="rounded-2xl p-5 sm:p-6 space-y-6">
         <div>
           <label className="block text-sm font-medium mb-2">
-            Contest Phase
+            {t('admin.contest.phase')}
           </label>
 
           <select
@@ -97,13 +100,13 @@ export default function ContestSettings() {
             className="border rounded-lg px-4 py-2"
           >
             <option value="submission">
-              Submission
+              {t('admin.contest.submission')}
             </option>
             <option value="evaluation">
-              Evaluation
+              {t('admin.contest.evaluation')}
             </option>
             <option value="finished">
-              Finished
+              {t('admin.contest.finished')}
             </option>
           </select>
         </div>
@@ -112,13 +115,13 @@ export default function ContestSettings() {
       {/* DEADLINES */}
       <div className="w-full sm:w-auto border rounded-lg px-4 py-2">
         <h2 className="text-xl font-semibold">
-          Deadlines
+          {t('admin.contest.deadlines')}
         </h2>
 
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-2">
-              Submission Deadline
+              {t('admin.contest.submissionDeadline')}
             </label>
 
             <input
@@ -139,13 +142,13 @@ export default function ContestSettings() {
               }
               className="mt-3 sm:mt-0 sm:ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg"
             >
-              Save
+              {t('admin.contest.save')}
             </button>
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-2">
-              Evaluation Deadline
+              {t('admin.contest.evaluationDeadline')}
             </label>
 
             <input
@@ -166,7 +169,7 @@ export default function ContestSettings() {
               }
               className="mt-3 sm:mt-0 sm:ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg"
             >
-              Save
+              {t('admin.contest.save')}
             </button>
           </div>
         </div>

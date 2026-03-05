@@ -1,6 +1,8 @@
-// Dashboard.tsx
+// src/pages/admin/Dashboard.tsx
 import { useQuery } from "@tanstack/react-query";
 import api from "@/services/api";
+import { useI18n } from "@/lib/i18n";
+
 
 interface DashboardData {
   contest: {
@@ -26,6 +28,7 @@ interface DashboardData {
 }
 
 export default function Dashboard() {
+  const { t } = useI18n();
   const { data, isLoading } = useQuery<DashboardData>({
     queryKey: ["admin-dashboard"],
     queryFn: async () => {
@@ -54,10 +57,10 @@ export default function Dashboard() {
 
       {/* PHASE */}
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <h1 className="text-3xl font-bold">{t('admin.dashboard.title')}</h1>
 
         <div className="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 font-medium">
-          Phase: {data.contest.phase}
+          {t('admin.dashboard.phase')}: {data.contest.phase}
         </div>
       </div>
 
@@ -65,47 +68,47 @@ export default function Dashboard() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 
         <StatsCard
-          title="Total Users"
+          title={t('admin.stats.totalUsers')}
           value={data.users.total}
         />
 
         <StatsCard
-          title="Jury Members"
+          title={t('admin.stats.juryMembers')}
           value={data.users.jury}
         />
 
         <StatsCard
-          title="Total Submissions"
+          title={t('admin.stats.totalSubmissions')}
           value={data.submissions.total}
         />
 
         <StatsCard
-          title="Pending"
+          title={t('admin.stats.pending')}
           value={data.submissions.pending}
         />
 
         <StatsCard
-          title="Approved"
+          title={t('admin.stats.approved')}
           value={data.submissions.approved}
         />
 
         <StatsCard
-          title="Rejected"
+          title={t('admin.stats.rejected')}
           value={data.submissions.rejected}
         />
 
         <StatsCard
-          title="Nominations"
+          title={t('admin.stats.nominations')}
           value={data.nominations.total}
         />
 
         <StatsCard
-          title="Total Evaluations"
+          title={t('admin.stats.totalEvaluations')}
           value={data.evaluations.total}
         />
 
         <StatsCard
-          title="Average Score"
+          title={t('admin.stats.averageScore')}
           value={data.evaluations.averageScore}
         />
 

@@ -222,7 +222,58 @@ const translations = {
 
     'admin.prev': 'Назад',
     'admin.next': 'Далее',
-    'admin.system': 'Система'
+    'admin.system': 'Система',
+
+    // admin sidebar
+    'admin.sidebar.title': 'Панель администратора',
+    'admin.sidebar.subtitle': 'Система управления',
+    'admin.sidebar.dashboard': 'Панель',
+    'admin.sidebar.users': 'Пользователи',
+    'admin.sidebar.submissions': 'Заявки',
+    'admin.sidebar.logs': 'Логи',
+    'admin.sidebar.contest': 'Настройки конкурса',
+    'admin.sidebar.footer': 'Админ панель',
+
+    // dashboard
+    'admin.dashboard.title': 'Панель',
+    'admin.dashboard.phase': 'Фаза',
+
+    'admin.stats.totalUsers': 'Всего пользователей',
+    'admin.stats.juryMembers': 'Жюри',
+    'admin.stats.totalSubmissions': 'Всего заявок',
+    'admin.stats.pending': 'Ожидают',
+    'admin.stats.approved': 'Одобрены',
+    'admin.stats.rejected': 'Отклонены',
+    'admin.stats.nominations': 'Номинации',
+    'admin.stats.totalEvaluations': 'Всего оценок',
+    'admin.stats.averageScore': 'Средний балл',
+
+    // users
+    'admin.users.title': 'Пользователи',
+    'admin.users.name': 'Имя',
+    'admin.users.email': 'Email',
+    'admin.users.role': 'Роль',
+    'admin.users.status': 'Статус',
+    'admin.users.actions': 'Действия',
+    'admin.users.allRoles': 'Все роли',
+    'admin.users.participant': 'Участник',
+    'admin.users.jury': 'Жюри',
+    'admin.users.admin': 'Администратор',
+    'admin.users.active': 'Активен',
+    'admin.users.disabled': 'Отключён',
+    'admin.users.activate': 'Активировать',
+    'admin.users.deactivate': 'Деактивировать',
+
+    // contest
+    'admin.contest.title': 'Настройки конкурса',
+    'admin.contest.phase': 'Фаза конкурса',
+    'admin.contest.submission': 'Приём заявок',
+    'admin.contest.evaluation': 'Оценивание',
+    'admin.contest.finished': 'Завершён',
+    'admin.contest.deadlines': 'Дедлайны',
+    'admin.contest.submissionDeadline': 'Дедлайн подачи',
+    'admin.contest.evaluationDeadline': 'Дедлайн оценки',
+    'admin.contest.save': 'Сохранить',
   },
 
 
@@ -435,7 +486,59 @@ const translations = {
 
     'admin.prev': 'Prev',
     'admin.next': 'Next',
-    'admin.system': 'System'
+    'admin.system': 'System',
+
+
+    // admin sidebar
+    'admin.sidebar.title': 'Admin Panel',
+    'admin.sidebar.subtitle': 'Management System',
+    'admin.sidebar.dashboard': 'Dashboard',
+    'admin.sidebar.users': 'Users',
+    'admin.sidebar.submissions': 'Submissions',
+    'admin.sidebar.logs': 'Logs',
+    'admin.sidebar.contest': 'Contest Settings',
+    'admin.sidebar.footer': 'Admin System',
+
+    // dashboard
+    'admin.dashboard.title': 'Dashboard',
+    'admin.dashboard.phase': 'Phase',
+
+    'admin.stats.totalUsers': 'Total Users',
+    'admin.stats.juryMembers': 'Jury Members',
+    'admin.stats.totalSubmissions': 'Total Submissions',
+    'admin.stats.pending': 'Pending',
+    'admin.stats.approved': 'Approved',
+    'admin.stats.rejected': 'Rejected',
+    'admin.stats.nominations': 'Nominations',
+    'admin.stats.totalEvaluations': 'Total Evaluations',
+    'admin.stats.averageScore': 'Average Score',
+
+    // users
+    'admin.users.title': 'Users',
+    'admin.users.name': 'Name',
+    'admin.users.email': 'Email',
+    'admin.users.role': 'Role',
+    'admin.users.status': 'Status',
+    'admin.users.actions': 'Actions',
+    'admin.users.allRoles': 'All Roles',
+    'admin.users.participant': 'Participant',
+    'admin.users.jury': 'Jury',
+    'admin.users.admin': 'Admin',
+    'admin.users.active': 'Active',
+    'admin.users.disabled': 'Disabled',
+    'admin.users.activate': 'Activate',
+    'admin.users.deactivate': 'Deactivate',
+
+    // contest
+    'admin.contest.title': 'Contest Settings',
+    'admin.contest.phase': 'Contest Phase',
+    'admin.contest.submission': 'Submission',
+    'admin.contest.evaluation': 'Evaluation',
+    'admin.contest.finished': 'Finished',
+    'admin.contest.deadlines': 'Deadlines',
+    'admin.contest.submissionDeadline': 'Submission Deadline',
+    'admin.contest.evaluationDeadline': 'Evaluation Deadline',
+    'admin.contest.save': 'Save',
   },
 } as const;
 

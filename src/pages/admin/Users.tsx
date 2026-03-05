@@ -2,6 +2,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import api from "@/services/api";
+import { useI18n } from "@/lib/i18n";
+
 
 interface User {
   _id: string;
@@ -13,6 +15,7 @@ interface User {
 }
 
 export default function Users() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const [roleFilter, setRoleFilter] = useState("");
 
@@ -77,7 +80,7 @@ export default function Users() {
 
       {/* HEADER */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-3xl font-bold">Users</h1>
+        <h1 className="text-3xl font-bold">{t('admin.users.title')}</h1>
       </div>
 
       {/* FILTER */}
@@ -87,10 +90,10 @@ export default function Users() {
           onChange={(e) => setRoleFilter(e.target.value)}
           className="w-full sm:w-60 border rounded-lg px-4 py-2"
         >
-          <option value="">All Roles</option>
-          <option value="participant">Participant</option>
-          <option value="jury">Jury</option>
-          <option value="admin">Admin</option>
+          <option value="">{t('admin.users.allRoles')}</option>
+          <option value="participant">{t('admin.users.participant')}</option>
+          <option value="jury">{t('admin.users.jury')}</option>
+          <option value="admin">{t('admin.users.admin')}</option>
         </select>
       </div>
 
@@ -101,11 +104,11 @@ export default function Users() {
 
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">Role</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Actions</th>
+              <th className="px-4 py-3">{t('admin.users.name')}</th>
+              <th className="px-4 py-3">{t('admin.users.email')}</th>
+              <th className="px-4 py-3">{t('admin.users.role')}</th>
+              <th className="px-4 py-3">{t('admin.users.status')}</th>
+              <th className="px-4 py-3">{t('admin.users.actions')}</th>
             </tr>
           </thead>
 
@@ -133,20 +136,20 @@ export default function Users() {
                     }
                     className="border rounded px-3 py-1"
                   >
-                    <option value="participant">Participant</option>
-                    <option value="jury">Jury</option>
-                    <option value="admin">Admin</option>
+                    <option value="participant">{t('admin.users.participant')}</option>
+                    <option value="jury">{t('admin.users.jury')}</option>
+                    <option value="admin">{t('admin.users.admin')}</option>
                   </select>
                 </td>
 
                 <td className="px-4 py-3">
                   {user.isActive !== false ? (
                     <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
-                      Active
+                      {t('admin.users.active')}
                     </span>
                   ) : (
                     <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">
-                      Disabled
+                      {t('admin.users.disabled')}
                     </span>
                   )}
                 </td>
@@ -163,8 +166,8 @@ export default function Users() {
                     className="px-3 py-1 text-sm border rounded-md"
                   >
                     {user.isActive !== false
-                      ? "Deactivate"
-                      : "Activate"}
+                      ? t('admin.users.deactivate')
+                      : t('admin.users.activate')}
                   </button>
                 </td>
 
