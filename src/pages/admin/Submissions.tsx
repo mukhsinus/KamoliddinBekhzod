@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 interface Submission {
   _id: string;
@@ -28,6 +29,7 @@ interface PaginatedResponse {
 }
 
 export default function Submissions() {
+  const { t } = useI18n();
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery<PaginatedResponse>({
@@ -48,7 +50,7 @@ export default function Submissions() {
     <div className="space-y-8">
 
       <h1 className="text-3xl font-bold">
-        Submissions
+        {t('admin.submissions.title')}
       </h1>
 
       <div className="bg-white border rounded-2xl overflow-hidden">
@@ -56,11 +58,11 @@ export default function Submissions() {
           <table className="min-w-[700px] w-full text-left text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="px-4 py-3">User</th>
-              <th className="px-4 py-3">Nomination</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Date</th>
-              <th className="px-4 py-3">Details</th>
+              <th className="px-4 py-3">{t('admin.submissions.user')}</th>
+              <th className="px-4 py-3">{t('admin.submissions.nomination')}</th>
+              <th className="px-4 py-3">{t('admin.submissions.status')}</th>
+              <th className="px-4 py-3">{t('admin.submissions.date')}</th>
+              <th className="px-4 py-3">{t('admin.submissions.details')}</th>
             </tr>
           </thead>
 
@@ -71,15 +73,31 @@ export default function Submissions() {
                 <td className="px-4 py-3">
                     {submission.user
                       ? `${submission.user.firstName} ${submission.user.lastName}`
-                      : "Deleted user"}
+                      : t('admin.submissions.deletedUser')}
                 </td>
 
                 <td className="px-4 py-3">
                   {submission.nomination}
                 </td>
 
-                <td className="px-4 py-3 capitalize">
-                  {submission.status}
+                <td className="px-4 py-3">
+                  {submission.status === "pending" && (
+                    <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs">
+                      {t('admin.submissions.status.pending')}
+                    </span>
+                  )}
+
+                  {submission.status === "approved" && (
+                    <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+                      {t('admin.submissions.status.approved')}
+                    </span>
+                  )}
+
+                  {submission.status === "rejected" && (
+                    <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs">
+                      {t('admin.submissions.status.rejected')}
+                    </span>
+                  )}
                 </td>
 
                 <td className="px-4 py-3">
@@ -93,7 +111,7 @@ export default function Submissions() {
                     to={`/admin/submissions/${submission._id}`}
                     className="text-indigo-600 hover:underline"
                   >
-                    View
+                    {t('admin.submissions.view')}
                   </Link>
                 </td>
 
@@ -112,11 +130,11 @@ export default function Submissions() {
           onClick={() => setPage((p) => p - 1)}
           className="px-4 py-2 border rounded-lg"
         >
-          Prev
+          {t('admin.submissions.prev')}
         </button>
 
         <span>
-          Page {data.pagination.page} of{" "}
+          {t('admin.submissions.page')} {data.pagination.page} {t('admin.submissions.of')}{" "}
           {data.pagination.pages}
         </span>
 
@@ -125,7 +143,7 @@ export default function Submissions() {
           onClick={() => setPage((p) => p + 1)}
           className="px-4 py-2 border rounded-lg"
         >
-          Next
+          {t('admin.submissions.next')}
         </button>
 
       </div>

@@ -30,6 +30,7 @@ import Users from "./pages/admin/Users";
 import Submissions from "./pages/admin/Submissions";
 import Logs from "./pages/admin/Logs";
 import ContestSettings from "./pages/admin/ContestSettings";
+import SubmissionDetails from "./pages/admin/SubmissionDetails";
 
 // Jury pages
 import JurySubmissions from "@/pages/jury/Submissions";
@@ -95,6 +96,7 @@ const App = () => (
                 <Route path="submissions" element={<Submissions />} />
                 <Route path="logs" element={<Logs />} />
                 <Route path="contest" element={<ContestSettings />} />
+                <Route path="submissions/:id" element={<SubmissionDetails />} />
               </Route>
 
               {/* ============================

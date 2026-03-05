@@ -274,6 +274,42 @@ const translations = {
     'admin.contest.submissionDeadline': 'Дедлайн подачи',
     'admin.contest.evaluationDeadline': 'Дедлайн оценки',
     'admin.contest.save': 'Сохранить',
+
+    'admin.submissions.title': 'Заявки',
+    'admin.submissions.user': 'Пользователь',
+    'admin.submissions.nomination': 'Номинация',
+    'admin.submissions.status': 'Статус',
+    'admin.submissions.date': 'Дата',
+    'admin.submissions.details': 'Детали',
+    'admin.submissions.view': 'Открыть',
+    'admin.submissions.deletedUser': 'Удалённый пользователь',
+
+    'admin.submissions.prev': 'Назад',
+    'admin.submissions.next': 'Далее',
+    'admin.submissions.page': 'Страница',
+    'admin.submissions.of': 'из',
+
+    'admin.submissions.status.pending': 'На рассмотрении',
+    'admin.submissions.status.approved': 'Одобрено',
+    'admin.submissions.status.rejected': 'Отклонено',
+
+
+    // submission details
+    'admin.submissionDetails.title': 'Заявка',
+    'admin.submissionDetails.back': 'Назад',
+    'admin.submissionDetails.author': 'Автор',
+    'admin.submissionDetails.email': 'Email',
+    'admin.submissionDetails.nomination': 'Номинация',
+    'admin.submissionDetails.status': 'Статус',
+    'admin.submissionDetails.submitted': 'Отправлено',
+    'admin.submissionDetails.workDescription': 'Описание работы',
+    'admin.submissionDetails.works': 'Работы',
+    'admin.submissionDetails.juryEvaluations': 'Оценки жюри',
+    'admin.submissionDetails.averageScore': 'Средний балл',
+    'admin.submissionDetails.approve': 'Одобрить',
+    'admin.submissionDetails.reject': 'Отклонить',
+    'admin.submissionDetails.deletedUser': 'Удалённый пользователь',
+    'admin.submissionDetails.score': 'Баллы',
   },
 
 
@@ -539,6 +575,41 @@ const translations = {
     'admin.contest.submissionDeadline': 'Submission Deadline',
     'admin.contest.evaluationDeadline': 'Evaluation Deadline',
     'admin.contest.save': 'Save',
+
+    'admin.submissions.title': 'Submissions',
+    'admin.submissions.user': 'User',
+    'admin.submissions.nomination': 'Nomination',
+    'admin.submissions.status': 'Status',
+    'admin.submissions.date': 'Date',
+    'admin.submissions.details': 'Details',
+    'admin.submissions.view': 'View',
+    'admin.submissions.deletedUser': 'Deleted user',
+
+    'admin.submissions.prev': 'Prev',
+    'admin.submissions.next': 'Next',
+    'admin.submissions.page': 'Page',
+    'admin.submissions.of': 'of',
+
+    'admin.submissions.status.pending': 'Pending',
+    'admin.submissions.status.approved': 'Approved',
+    'admin.submissions.status.rejected': 'Rejected',
+
+    // submission details
+    'admin.submissionDetails.title': 'Submission',
+    'admin.submissionDetails.back': 'Back',
+    'admin.submissionDetails.author': 'Author',
+    'admin.submissionDetails.email': 'Email',
+    'admin.submissionDetails.nomination': 'Nomination',
+    'admin.submissionDetails.status': 'Status',
+    'admin.submissionDetails.submitted': 'Submitted',
+    'admin.submissionDetails.workDescription': 'Work Description',
+    'admin.submissionDetails.works': 'Works',
+    'admin.submissionDetails.juryEvaluations': 'Jury Evaluations',
+    'admin.submissionDetails.averageScore': 'Average Score',
+    'admin.submissionDetails.approve': 'Approve',
+    'admin.submissionDetails.reject': 'Reject',
+    'admin.submissionDetails.deletedUser': 'Deleted user',
+    'admin.submissionDetails.score': 'Score',
   },
 } as const;
 

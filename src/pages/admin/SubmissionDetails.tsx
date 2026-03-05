@@ -2,6 +2,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 interface Evaluation {
   _id: string;
@@ -31,6 +32,7 @@ interface Submission {
 }
 
 export default function SubmissionDetails() {
+  const {t} = useI18n();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -92,35 +94,54 @@ export default function SubmissionDetails() {
         onClick={() => navigate(-1)}
         className="text-sm text-gray-500 hover:underline"
       >
-        ← Back
+        ← {t('admin.submissionDetails.back')}
       </button>
 
       <h1 className="text-3xl font-bold">
-        Submission Details
+        {t('admin.submissionDetails.title')}
       </h1>
 
       {/* META */}
       <div className="bg-white border rounded-2xl p-5 sm:p-6 space-y-4">
 
         <div>
-          <strong>Author:</strong>{" "}
-          {data.user.firstName} {data.user.lastName}
+          <strong>{t('admin.submissionDetails.author')}:</strong>{" "}
+          {data.user
+            ? `${data.user.firstName} ${data.user.lastName}`
+            : t('admin.submissionDetails.deletedUser')}
         </div>
 
         <div>
-          <strong>Email:</strong> {data.user.email}
+          <strong>{t('admin.submissionDetails.email')}:</strong> {data.user ? data.user.email : t('admin.submissionDetails.deletedUser')}
         </div>
 
         <div>
-          <strong>Nomination:</strong> {data.nomination}
+          <strong>{t('admin.submissionDetails.nomination')}:</strong> {data.nomination}
         </div>
 
         <div>
-          <strong>Status:</strong> {data.status}
+          <strong>{t('admin.submissionDetails.status')}:</strong>{" "}
+          {data.status === "pending" && (
+            <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
+              {t("admin.submissions.status.pending")}
+            </span>
+          )}
+
+          {data.status === "approved" && (
+            <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
+              {t("admin.submissions.status.approved")}
+            </span>
+          )}
+
+          {data.status === "rejected" && (
+            <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">
+              {t("admin.submissions.status.rejected")}
+            </span>
+          )}
         </div>
 
         <div>
-          <strong>Submitted:</strong>{" "}
+          <strong>{t('admin.submissionDetails.submitted')}:</strong>{" "}
           {new Date(data.createdAt).toLocaleString()}
         </div>
 
@@ -130,7 +151,7 @@ export default function SubmissionDetails() {
       {data.workDescription && (
         <div className="bg-white border rounded-2xl p-5 sm:p-6">
           <h2 className="font-semibold mb-2">
-            Work Description
+            {t('admin.submissionDetails.workDescription')}
           </h2>
           <p className="text-gray-700">
             {data.workDescription}
@@ -140,7 +161,7 @@ export default function SubmissionDetails() {
 
       {/* WORK FILES */}
       <div className="bg-white border rounded-2xl p-5 sm:p-6 space-y-4">
-        <h2 className="font-semibold">Works</h2>
+        <h2 className="font-semibold">{t('admin.submissionDetails.works')}</h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {data.works.map((work) => (
@@ -164,12 +185,12 @@ export default function SubmissionDetails() {
       {/* EVALUATIONS */}
       <div className="bg-white border rounded-2xl p-5 sm:p-6 space-y-4">
         <h2 className="font-semibold">
-          Jury Evaluations
+          {t('admin.submissionDetails.juryEvaluations')}
         </h2>
 
         {average && (
           <div className="text-lg font-bold">
-            Average Score: {average}
+            {t('admin.submissionDetails.averageScore')}: {average}
           </div>
         )}
 
@@ -182,7 +203,7 @@ export default function SubmissionDetails() {
               {evalItem.jury.firstName}{" "}
               {evalItem.jury.lastName}
             </div>
-            <div>Score: {evalItem.score}</div>
+            <div>{t('admin.submissionDetails.score')}: {evalItem.score}</div>
             {evalItem.comment && (
               <div className="text-sm text-gray-600 mt-2">
                 {evalItem.comment}
@@ -193,25 +214,25 @@ export default function SubmissionDetails() {
       </div>
 
       {/* ACTIONS */}
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <button
-          onClick={() =>
-            updateStatus.mutate("approved")
-          }
-          className="px-4 py-2 bg-green-600 text-white rounded-lg"
-        >
-          Approve
-        </button>
+      {data.status === "pending" && (
+        <div className="flex flex-col gap-4 sm:flex-row">
 
-        <button
-          onClick={() =>
-            updateStatus.mutate("rejected")
-          }
-          className="px-4 py-2 bg-red-600 text-white rounded-lg"
-        >
-          Reject
-        </button>
-      </div>
+          <button
+            onClick={() => updateStatus.mutate("approved")}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg"
+          >
+            {t('admin.submissionDetails.approve')}
+          </button>
+
+          <button
+            onClick={() => updateStatus.mutate("rejected")}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg"
+          >
+            {t('admin.submissionDetails.reject')}
+          </button>
+
+        </div>
+      )}
 
     </div>
   );

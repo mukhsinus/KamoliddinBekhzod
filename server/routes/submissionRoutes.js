@@ -1,3 +1,4 @@
+// server/routes/submissionRoutes.js
 const express = require('express');
 const mongoose = require('mongoose');
 
@@ -118,34 +119,6 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-/* ========================================
-   GET SINGLE SUBMISSION (JURY / ADMIN)
-======================================== */
-router.get(
-  '/:id',
-  auth,
-  requireRole('jury', 'admin'),
-  async (req, res) => {
-    try {
-
-      if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-        return res.status(400).json({ error: 'Invalid ID' });
-      }
-
-      const submission = await Submission.findById(req.params.id)
-        .populate('user', 'firstName lastName email');
-
-      if (!submission) {
-        return res.status(404).json({ error: 'Submission not found' });
-      }
-
-      res.json(submission);
-
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  }
-);
 
 /* ========================================
    UPDATE SUBMISSION
@@ -223,6 +196,7 @@ router.put('/:id', auth, upload.array('works', 10), async (req, res) => {
   }
 });
 
+
 /* ========================================
    ADMIN: GET ALL SUBMISSIONS
 ======================================== */
@@ -274,6 +248,67 @@ router.get(
     }
   }
 );
+
+
+/* ========================================
+   ADMIN: GET SINGLE SUBMISSION
+======================================== */
+router.get(
+  '/admin/:id',
+  auth,
+  requireRole('admin'),
+  async (req, res) => {
+    try {
+
+      if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ error: 'Invalid ID' });
+      }
+
+      const submission = await Submission.findById(req.params.id)
+        .populate('user', 'firstName lastName email');
+
+      if (!submission) {
+        return res.status(404).json({ error: 'Submission not found' });
+      }
+
+      res.json(submission);
+
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+
+
+/* ========================================
+   GET SINGLE SUBMISSION (JURY / ADMIN)
+======================================== */
+router.get(
+  '/:id',
+  auth,
+  requireRole('jury', 'admin'),
+  async (req, res) => {
+    try {
+
+      if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ error: 'Invalid ID' });
+      }
+
+      const submission = await Submission.findById(req.params.id)
+        .populate('user', 'firstName lastName email');
+
+      if (!submission) {
+        return res.status(404).json({ error: 'Submission not found' });
+      }
+
+      res.json(submission);
+
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+
 
 /* ========================================
    ADMIN: CHANGE SUBMISSION STATUS
