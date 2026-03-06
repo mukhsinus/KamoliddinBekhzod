@@ -14,7 +14,7 @@ const Footer = () => {
 
   return (
     <footer className="border-t border-border bg-primary text-primary-foreground">
-      <div className="container mx-auto px-4 py-12 lg:py-16">
+      <div className="container mx-auto px-4 pt-12 lg:pt-16">
         <div className="grid gap-8 md:grid-cols-3">
           {/* Brand */}
           <div>
@@ -70,7 +70,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-primary-foreground/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-12 border-t border-primary-foreground/10 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-primary-foreground/40">
             © {new Date().getFullYear()} {lang === 'ru' ? 'Конкурс им. Бехзода' : 'Behzod Competition'}. {t('footer.rights')}.
           </p>

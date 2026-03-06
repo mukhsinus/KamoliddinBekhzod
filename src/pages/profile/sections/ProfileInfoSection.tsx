@@ -38,7 +38,11 @@ export default function ProfileInfoSection({
           <div className="relative group">
             <img
               src={avatarPreview}
+              alt="User avatar"
               className="w-32 h-32 rounded-full object-cover border-4 border-[#d4af37] shadow-md"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23e5e7eb"/%3E%3Ccircle cx="50" cy="35" r="15" fill="%239ca3af"/%3E%3Cpath d="M20 80 Q20 65 50 65 Q80 65 80 80" fill="%239ca3af"/%3E%3C/svg%3E';
+              }}
             />
 
             {edit && (
@@ -75,6 +79,8 @@ export default function ProfileInfoSection({
           ).map((field) => (
             <input
               key={field}
+              type={field === "email" ? "email" : field === "phone" ? "tel" : field === "age" ? "number" : "text"}
+              placeholder={t(`profile.placeholder.${field}`) || field}
               value={form[field] ?? ""}
               disabled={!edit}
               onChange={(e) =>

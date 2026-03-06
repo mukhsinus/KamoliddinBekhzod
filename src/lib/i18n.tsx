@@ -128,6 +128,13 @@ const translations = {
     'profile.field.phone': 'Телефон',
     'profile.field.email': 'Email',
 
+    'profile.placeholder.firstName': 'Введите имя',
+    'profile.placeholder.lastName': 'Введите фамилию',
+    'profile.placeholder.age': 'Укажите возраст',
+    'profile.placeholder.city': 'Город проживания',
+    'profile.placeholder.phone': 'Ваш номер телефона',
+    'profile.placeholder.email': 'example@email.com',
+
     'profile.edit': 'Редактировать профиль',
     'profile.save': 'Сохранить изменения',
     'profile.saving': 'Сохранение...',
@@ -427,6 +434,13 @@ const translations = {
     'profile.field.city': 'City',
     'profile.field.phone': 'Phone',
     'profile.field.email': 'Email',
+
+    'profile.placeholder.firstName': 'Enter first name',
+    'profile.placeholder.lastName': 'Enter last name',
+    'profile.placeholder.age': 'Your age',
+    'profile.placeholder.city': 'City of residence',
+    'profile.placeholder.phone': 'Your phone number',
+    'profile.placeholder.email': 'example@email.com',
 
     'profile.edit': 'Edit Profile',
     'profile.save': 'Save Changes',
