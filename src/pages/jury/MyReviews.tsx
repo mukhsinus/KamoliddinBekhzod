@@ -1,4 +1,4 @@
-// MyReviews.tsx
+// src/pages/jury/MyReviews.tsx
 import { useEffect, useState } from "react";
 import api from "@/services/api";
 import { useI18n } from "@/lib/i18n";

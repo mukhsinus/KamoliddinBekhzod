@@ -1,4 +1,4 @@
-// jury/Dashboard.tsx
+// src/pages/jury/Dashboard.tsx
 import { useEffect, useState } from "react";
 import api from "@/services/api";
 import { useI18n } from "@/lib/i18n";
@@ -47,7 +47,7 @@ export default function JuryDashboard() {
         {t('jury.title')}
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
         <StatCard
           title={t('jury.totalSubmissions')}
