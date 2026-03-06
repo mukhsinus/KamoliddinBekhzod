@@ -1,8 +1,8 @@
 // src/pages/Jury.tsx
-
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { X } from "lucide-react";
 
 import Komolova from "@/assets/jury/Komolova.webp";
 import Jalilova from "@/assets/jury/Jalilova.webp";
@@ -32,7 +32,6 @@ const juryMembers: JuryMember[] = [
     masterclass: "Этно-мода и современный дизайн",
     photo: Komolova
   },
-
   {
     name: "Жалилова Саида Садирдин кизи",
     title: "Член Союза художников Узбекистана",
@@ -46,7 +45,6 @@ const juryMembers: JuryMember[] = [
     masterclass: "Мастер-класс по миниатюре",
     photo: Jalilova
   },
-
   {
     name: "Балланд Татьяна Валерьевна",
     title: "Профессор кафедры дизайна костюма СПбГУПТД",
@@ -60,7 +58,6 @@ const juryMembers: JuryMember[] = [
     masterclass: "Цифровое моделирование костюма",
     photo: Balland
   },
-
   {
     name: "Расулова Эльнура Фархатовна",
     title: "Преподаватель Республиканской специализированной школы дизайна",
@@ -112,63 +109,127 @@ export default function Jury() {
 
       </section>
 
-      {/* GRID */}
 
-      <section className="container mx-auto px-4 py-16">
+    {/* GRID */}
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+    <section className="container mx-auto px-4 py-16">
 
-          {juryMembers.map((member, i) => (
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
 
-            <motion.div
-              key={member.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="bg-card border border-border rounded-xl overflow-hidden shadow-soft hover:shadow-lg transition"
-            >
+        {juryMembers.map((member, i) => (
 
-              <div className="aspect-[4/5] overflow-hidden">
+        <motion.div
+            key={member.name}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+            className="group bg-card border border-border rounded-xl overflow-hidden shadow-soft hover:shadow-xl transition flex flex-col"
+        >
+
+            {/* PHOTO */}
+
+            <div className="aspect-[4/4.4] overflow-hidden p-2">
+
+            <div className="h-full w-full rounded-lg border border-yellow-500/60 group-hover:border-yellow-400 transition">
 
                 <img
-                  src={member.photo}
-                  alt={member.name}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition duration-500 hover:scale-105"
+                src={member.photo}
+                alt={member.name}
+                loading="lazy"
+                className="w-full h-full object-cover rounded-md transition duration-500 group-hover:scale-105"
                 />
 
-              </div>
+            </div>
 
-              <div className="p-4 lg:p-6">
+            </div>
 
-                <h3 className="font-display text-sm lg:text-lg font-semibold">
-                  {member.name}
+
+            {/* MOBILE CONTENT */}
+
+            <div className="p-4 flex flex-col flex-1 lg:hidden">
+
+            <div className="space-y-1">
+
+                <h3 className="font-display text-sm font-semibold">
+                {member.name}
                 </h3>
 
-                <p className="text-gold text-xs lg:text-sm mt-1">
-                  {member.title}
+                <p className="text-gold text-xs">
+                {member.title}
                 </p>
 
-                {/* КНОПКА */}
+            </div>
 
+            <div className="mt-auto pt-6">
                 <button
-                  onClick={() => setSelected(member)}
-                  className="mt-4 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-xs lg:text-sm font-semibold text-primary-foreground hover:opacity-90 transition"
+                onClick={() => setSelected(member)}
+                className="w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90 transition"
                 >
-                  {lang === "ru" ? "Подробнее" : "Details"}
+                {lang === "ru" ? "Подробнее" : "Details"}
                 </button>
+            </div>
 
-              </div>
+            </div>
 
-            </motion.div>
 
-          ))}
+            {/* DESKTOP CONTENT */}
 
-        </div>
+            <div className="hidden lg:flex p-6 pt-2 flex-col flex-1">
 
-      </section>
+            <div>
 
-      {/* MODAL */}
+                <h3 className="font-display text-xl font-semibold">
+                {member.name}
+                </h3>
+
+                <p className="text-gold text-sm mt-1">
+                {member.title}
+                </p>
+
+                <p className="text-sm text-muted-foreground mt-2">
+                {member.location}
+                </p>
+
+                <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+
+                {member.achievements.map((a, i) => (
+                    <li key={i}>• {a}</li>
+                ))}
+
+                </ul>
+
+            </div>
+
+            {member.masterclass && (
+
+                <div className="mt-auto pt-6 mt-8 border-t text-sm">
+
+                <strong>
+                    {lang === "ru"
+                    ? "Мастер-класс:"
+                    : "Masterclass:"}
+                </strong>
+
+                <p className="mt-2">
+                    {member.masterclass}
+                </p>
+
+                </div>
+
+            )}
+
+            </div>
+
+        </motion.div>
+
+        ))}
+
+    </div>
+
+    </section>
+
+
+      {/* MODAL (MOBILE ONLY) */}
 
       <AnimatePresence>
 
@@ -186,13 +247,20 @@ export default function Jury() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9 }}
-              className="bg-background rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 lg:p-8"
+              className="relative bg-background rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 lg:p-8"
               onClick={(e) => e.stopPropagation()}
             >
 
+              <button
+                onClick={() => setSelected(null)}
+                className="absolute top-4 right-4 p-2 rounded-md hover:bg-muted transition"
+              >
+                <X size={20} />
+              </button>
+
               <img
                 src={selected.photo}
-                className="w-full h-[420px] object-cover rounded-lg mb-6"
+                className="w-full max-h-[500px] object-contain rounded-lg mb-6 bg-muted"
               />
 
               <h2 className="font-display text-2xl lg:text-3xl font-semibold">

@@ -213,6 +213,32 @@ const Header = () => {
 
               ))}
 
+              {/* AUTH BUTTON */}
+
+              {!isAuthenticated ? (
+
+                <Link
+                  to="/auth"
+                  onClick={closeMobile}
+                  className="mt-4 rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground text-center"
+                >
+                  {t("nav.login")}
+                </Link>
+
+              ) : (
+
+                <button
+                  onClick={() => {
+                    handleLogout()
+                    closeMobile()
+                  }}
+                  className="mt-4 rounded-md bg-destructive px-4 py-3 text-sm font-semibold text-white"
+                >
+                  {t("profile.logout")}
+                </button>
+
+              )}
+
             </nav>
 
           </motion.div>
