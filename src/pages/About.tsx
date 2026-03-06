@@ -1,3 +1,4 @@
+// src/pages/About.tsx
 import { useI18n } from '@/lib/i18n';
 import { motion } from 'framer-motion';
 import { Calendar, Globe, Users, Target, Award, FileCheck } from 'lucide-react';

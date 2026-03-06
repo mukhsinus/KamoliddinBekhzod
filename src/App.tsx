@@ -1,4 +1,4 @@
-// App.tsx
+// src/App.tsx
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -23,6 +23,7 @@ import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import Jury from "./pages/Jury"
 
 // Admin pages
 import Dashboard from "./pages/admin/Dashboard";
@@ -68,6 +69,7 @@ const App = () => (
                 <Route path="/biography" element={<Biography />} />
                 <Route path="/contacts" element={<Contacts />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/jury-info" element={<Jury />} />
 
                 <Route
                   path="/profile"

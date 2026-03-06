@@ -1,117 +1,93 @@
-// Header.tsx
-import { useState, useEffect, useMemo } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useI18n } from "@/lib/i18n";
-import { useAuth } from "@/context/AuthContext";
-import { UserRole } from "@/types/roles";
-import { Menu, X, Globe } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+// src/components/Header.tsx
 
-interface RoleNavItem {
-  label: string;
-  to: string;
-  roles: UserRole[];
-  highlight?: boolean;
-}
+import { useState, useEffect, useMemo } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { useI18n } from "@/lib/i18n"
+import { useAuth } from "@/context/AuthContext"
+import { Menu, X, Globe } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 
 const Header = () => {
-  const { t, lang, setLang } = useI18n();
-  const { user, loading, logout } = useAuth();
 
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const { t, lang, setLang } = useI18n()
+  const { user, loading, logout } = useAuth()
 
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
-  const isAuthenticated = !!user;
+  const location = useLocation()
+  const navigate = useNavigate()
 
-  /* =========================
-     Scroll Detection
-  ========================= */
+  const isAuthenticated = !!user
+
+  /* ================= SCROLL DETECTION ================= */
+
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
-  /* =========================
-     Base Navigation
-  ========================= */
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+
+    return () => window.removeEventListener("scroll", handleScroll)
+
+  }, [])
+
+  /* ================= NAV LINKS ================= */
+
   const baseLinks = useMemo(() => [
+
     { to: "/", label: t("nav.home") },
     { to: "/about", label: t("nav.about") },
     { to: "/nominations", label: t("nav.nominations") },
     { to: "/rules", label: t("nav.rules") },
     { to: "/faq", label: t("nav.faq") },
     { to: "/biography", label: t("nav.biography") },
-    { to: "/contacts", label: t("nav.contacts") },
-  ], [t]);
+    { to: "/jury-info", label: "Жюри" },
+    { to: "/contacts", label: t("nav.contacts") }
 
-  /* =========================
-     Role-based Navigation
-  ========================= */
-  const roleLinks: RoleNavItem[] = [
-    {
-      label: t("profile.tabs.profile"),
-      to: "/profile",
-      roles: ["participant", "jury", "admin"]
-    },
-    {
-      label: "Jury Panel",
-      to: "/jury",
-      roles: ["jury"],
-      highlight: true
-    },
-    {
-      label: "Admin Panel",
-      to: "/admin",
-      roles: ["admin"],
-      highlight: true
-    }
-  ];
+  ], [t])
 
-  const allowedRoleLinks = useMemo(() => {
-    if (!user) return [];
-    return roleLinks.filter(link =>
-      link.roles.includes(user.role)
-    );
-  }, [user, roleLinks]);
-
-  const isActive = (path: string) =>
-    location.pathname === path;
+  const isActive = (path: string) => location.pathname === path
 
   const handleLogout = () => {
-    logout();
-    navigate("/", { replace: true });
-  };
 
-  const closeMobile = () => setMobileOpen(false);
+    logout()
+    navigate("/", { replace: true })
 
-  const topText = scrolled
+  }
+
+  const closeMobile = () => setMobileOpen(false)
+
+  /* ================= TEXT COLORS ================= */
+
+  const textColor = scrolled
     ? "text-foreground"
-    : "text-primary-foreground/80";
+    : "text-primary-foreground"
 
-  const topMuted = scrolled
-    ? "text-muted-foreground"
-    : "text-primary-foreground/60";
+  const navColor = scrolled
+    ? "text-muted-foreground hover:text-primary hover:bg-muted"
+    : "text-primary-foreground/80 hover:text-white hover:bg-white/10"
 
-  if (loading) return null;
+  if (loading) return null
 
   return (
+
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-background/90 border-b border-border shadow-soft"
+          ? "bg-background/90 backdrop-blur-md border-b border-border shadow-sm"
           : "bg-transparent"
       }`}
     >
+
       <div className="container mx-auto flex h-16 items-center justify-between px-4 lg:h-20">
 
         {/* ================= LOGO ================= */}
+
         <Link to="/" className="flex items-center gap-3">
+
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
             <span className="font-display text-lg font-bold text-primary-foreground">
               B
@@ -119,21 +95,23 @@ const Header = () => {
           </div>
 
           <div className="hidden sm:block">
-            <p className={`font-display text-sm font-semibold ${topText}`}>
+
+            <p className={`font-display text-sm font-semibold ${textColor}`}>
               {lang === "ru"
                 ? "Конкурс Бехзода"
                 : "Behzod Competition"}
             </p>
-            <p className={`text-xs ${topMuted}`}>
-              {lang === "ru" ? "" : "International"}
-            </p>
+
           </div>
+
         </Link>
 
         {/* ================= DESKTOP NAV ================= */}
+
         <nav className="hidden items-center gap-1 lg:flex">
 
-          {baseLinks.map((link) => (
+          {baseLinks.map(link => (
+
             <Link
               key={link.to}
               to={link.to}
@@ -141,68 +119,55 @@ const Header = () => {
                 isActive(link.to)
                   ? scrolled
                     ? "text-primary bg-secondary"
-                    : "text-primary-foreground bg-white/10"
-                  : scrolled
-                  ? "text-muted-foreground hover:text-primary hover:bg-muted"
-                  : "text-primary-foreground/80 hover:text-white hover:bg-white/10"
+                    : "text-white bg-white/10"
+                  : navColor
               }`}
             >
               {link.label}
             </Link>
+
           ))}
 
-          {/* ================= AUTH AREA ================= */}
           {!isAuthenticated ? (
+
             <Link
               to="/auth"
               className={`ml-4 rounded-md px-4 py-2 text-sm font-semibold transition ${
                 scrolled
                   ? "bg-primary text-primary-foreground hover:opacity-90"
-                  : "bg-white/10 text-primary-foreground hover:bg-white/20"
+                  : "bg-white/10 text-white hover:bg-white/20"
               }`}
             >
               {t("nav.login")}
             </Link>
-          ) : (
-            <>
-              {allowedRoleLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`ml-4 rounded-md px-4 py-2 text-sm font-semibold transition ${
-                    link.highlight
-                      ? "bg-indigo-600 text-white hover:opacity-90"
-                      : scrolled
-                      ? "bg-primary text-primary-foreground hover:opacity-90"
-                      : "bg-white/10 text-primary-foreground hover:bg-white/20"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
 
-              <button
-                onClick={handleLogout}
-                className={`ml-3 text-sm transition ${
-                  scrolled
-                    ? "text-destructive hover:opacity-80"
-                    : "text-red-300 hover:text-red-200"
-                }`}
-              >
-                {t("profile.logout")}
-              </button>
-            </>
+          ) : (
+
+            <button
+              onClick={handleLogout}
+              className={`ml-4 text-sm transition ${
+                scrolled
+                  ? "text-destructive hover:opacity-80"
+                  : "text-red-300 hover:text-red-200"
+              }`}
+            >
+              {t("profile.logout")}
+            </button>
+
           )}
+
         </nav>
 
         {/* ================= RIGHT CONTROLS ================= */}
+
         <div className="flex items-center gap-2">
+
           <button
             onClick={() => setLang(lang === "ru" ? "en" : "ru")}
             className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition ${
               scrolled
                 ? "border border-border text-foreground hover:border-primary"
-                : "border border-white/30 text-primary-foreground hover:border-white"
+                : "border border-white/30 text-white hover:border-white"
             }`}
           >
             <Globe className="h-4 w-4" />
@@ -211,25 +176,32 @@ const Header = () => {
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className={`rounded-md p-2 lg:hidden ${topText}`}
+            className={`rounded-md p-2 lg:hidden ${textColor}`}
           >
             {mobileOpen ? <X /> : <Menu />}
           </button>
+
         </div>
+
       </div>
 
       {/* ================= MOBILE MENU ================= */}
+
       <AnimatePresence>
+
         {mobileOpen && (
+
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden border-t border-border bg-background lg:hidden"
           >
+
             <nav className="container mx-auto flex flex-col gap-2 px-4 py-4">
 
-              {baseLinks.map((link) => (
+              {baseLinks.map(link => (
+
                 <Link
                   key={link.to}
                   to={link.to}
@@ -238,50 +210,21 @@ const Header = () => {
                 >
                   {link.label}
                 </Link>
+
               ))}
 
-              {!isAuthenticated ? (
-                <Link
-                  to="/auth"
-                  onClick={closeMobile}
-                  className="rounded-md bg-primary px-4 py-3 text-sm text-primary-foreground"
-                >
-                  {t("nav.login")}
-                </Link>
-              ) : (
-                <>
-                  {allowedRoleLinks.map((link) => (
-                    <Link
-                      key={link.to}
-                      to={link.to}
-                      onClick={closeMobile}
-                      className={`rounded-md px-4 py-3 text-sm ${
-                        link.highlight
-                          ? "bg-indigo-600 text-white"
-                          : "bg-primary text-primary-foreground"
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      closeMobile();
-                    }}
-                    className="text-left px-4 py-3 text-sm text-destructive"
-                  >
-                    {t("profile.logout")}
-                  </button>
-                </>
-              )}
             </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
-  );
-};
 
-export default Header;
+          </motion.div>
+
+        )}
+
+      </AnimatePresence>
+
+    </header>
+
+  )
+
+}
+
+export default Header
