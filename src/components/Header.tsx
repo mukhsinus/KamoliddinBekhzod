@@ -142,17 +142,30 @@ const Header = () => {
             </Link>
 
           ) : (
-
-            <button
-              onClick={handleLogout}
-              className={`ml-4 text-sm transition ${
-                scrolled
-                  ? "text-destructive hover:opacity-80"
-                  : "text-red-300 hover:text-red-200"
-              }`}
-            >
-              {t("profile.logout")}
-            </button>
+            <>
+              <Link
+                to="/profile"
+                className={`ml-4 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  isActive("/profile")
+                    ? scrolled
+                      ? "text-primary bg-secondary"
+                      : "text-white bg-white/10"
+                    : navColor
+                }`}
+              >
+                {t("profile.hero.title")}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className={`ml-4 text-sm transition ${
+                  scrolled
+                    ? "text-destructive hover:opacity-80"
+                    : "text-red-300 hover:text-red-200"
+                }`}
+              >
+                {t("profile.logout")}
+              </button>
+            </>
 
           )}
 
@@ -226,16 +239,24 @@ const Header = () => {
                 </Link>
 
               ) : (
-
-                <button
-                  onClick={() => {
-                    handleLogout()
-                    closeMobile()
-                  }}
-                  className="mt-4 rounded-md bg-destructive px-4 py-3 text-sm font-semibold text-white"
-                >
-                  {t("profile.logout")}
-                </button>
+                <>
+                  <Link
+                    to="/profile"
+                    onClick={closeMobile}
+                    className="rounded-md px-4 py-3 text-sm text-foreground hover:bg-muted"
+                  >
+                    {t("profile.hero.title")}
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout()
+                      closeMobile()
+                    }}
+                    className="mt-4 rounded-md bg-destructive px-4 py-3 text-sm font-semibold text-white"
+                  >
+                    {t("profile.logout")}
+                  </button>
+                </>
 
               )}
 
