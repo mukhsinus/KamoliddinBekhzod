@@ -1,4 +1,4 @@
-// requireRole.js
+// src/middleware/requireRole.js
 const requireRole = (...allowedRoles) => {
   return (req, res, next) => {
     try {
