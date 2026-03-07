@@ -38,7 +38,7 @@ const Index = () => {
     <div>
 
       {/* HERO */}
-      <section className="relative overflow-hidden min-h-[100svh] flex flex-col">
+      <section className="relative overflow-hidden min-h-[100svh] lg:h-screen flex flex-col">
 
         {/* background */}
         <div className="absolute inset-0">
@@ -55,12 +55,12 @@ const Index = () => {
         </div>
 
         {/* content */}
-        <div className="relative container mx-auto px-4 py-24 lg:py-40">
+        <div className="relative container mx-auto px-4 py-24 lg:py-28">
 
           <motion.div
             initial="hidden"
             animate="visible"
-            className="max-w-3xl mx-auto lg:mx-0 text-center lg:text-left"
+            className="max-w-3xl mx-auto lg:mx-0 text-left lg:text-left"
           >
 
             {/* deadline */}
