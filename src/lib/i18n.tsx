@@ -255,6 +255,7 @@ const translations = {
     'admin.stats.nominations': 'Номинации',
     'admin.stats.totalEvaluations': 'Всего оценок',
     'admin.stats.averageScore': 'Средний балл',
+    'admin.dashboard.topByNomination': 'Топ 3 по номинациям',
 
     // users
     'admin.users.title': 'Пользователи',
@@ -563,6 +564,7 @@ const translations = {
     'admin.stats.nominations': 'Nominations',
     'admin.stats.totalEvaluations': 'Total Evaluations',
     'admin.stats.averageScore': 'Average Score',
+    'admin.dashboard.topByNomination': 'Top 3 by Nomination',
 
     // users
     'admin.users.title': 'Users',
