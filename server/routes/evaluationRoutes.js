@@ -31,9 +31,9 @@ router.post(
          VALIDATE SCORE
       =============================== */
 
-      if (typeof score !== 'number' || score < 0 || score > 100) {
+      if (typeof score !== 'number' || score < 0 || score > 10) {
         return res.status(400).json({
-          error: 'Score must be between 0 and 100'
+          error: 'Score must be between 0 and 10'
         });
       }
 

@@ -29,7 +29,7 @@ export default function JuryReview() {
   const queryClient = useQueryClient();
   const { t } = useI18n();
 
-  const [score, setScore] = useState<number>(50);
+  const [score, setScore] = useState<number>(10);
   const [comment, setComment] = useState("");
 
   /* ===============================
@@ -160,7 +160,7 @@ export default function JuryReview() {
         <input
           type="range"
           min={0}
-          max={100}
+          max={10}
           value={score}
           onChange={(e) => setScore(Number(e.target.value))}
           className="w-full"

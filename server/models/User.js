@@ -11,14 +11,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      maxlength: 100
+      maxlength: 24
     },
 
     lastName: {
       type: String,
       required: true,
       trim: true,
-      maxlength: 100
+      maxlength: 24
     },
 
     age: {

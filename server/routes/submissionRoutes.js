@@ -59,6 +59,19 @@ router.post('/', auth, upload.array('works', 10), async (req, res) => {
       return res.status(400).json({ error: 'Nomination is not active' });
     }
 
+
+    // максимум 3 номинации на участника
+    const submissionsCount = await Submission.countDocuments({
+      user: req.user.userId
+    });
+
+    if (submissionsCount >= 3) {
+      return res.status(400).json({
+        error: 'You can submit to maximum 3 nominations'
+      });
+    }
+
+
     const exists = await Submission.findOne({
       user: req.user.userId,
       nomination

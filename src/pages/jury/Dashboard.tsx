@@ -84,7 +84,7 @@ function StatCard({
 }) {
   return (
     <div className="bg-white border rounded-xl p-6 shadow-sm">
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-gray-0">
         {title}
       </div>
 

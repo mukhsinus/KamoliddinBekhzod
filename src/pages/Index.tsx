@@ -18,8 +18,8 @@ const Index = () => {
   const { t, lang } = useI18n();
 
   const stats = [
-    { icon: Globe, value: '40+', label: lang === 'ru' ? 'Стран-участниц' : 'Countries' },
-    { icon: Users, value: '2,500+', label: lang === 'ru' ? 'Участников' : 'Participants' },
+    { icon: Globe, value: '10+', label: lang === 'ru' ? 'Стран-участниц' : 'Countries' },
+    { icon: Users, value: '100+', label: lang === 'ru' ? 'Участников' : 'Participants' },
     { icon: Palette, value: '7', label: lang === 'ru' ? 'Номинаций' : 'Nominations' },
     { icon: Award, value: '21', label: lang === 'ru' ? 'Призовых мест' : 'Prize Places' },
   ];
