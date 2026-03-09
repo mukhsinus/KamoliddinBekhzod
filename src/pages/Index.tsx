@@ -91,7 +91,7 @@ const Index = () => {
               <motion.p
                 variants={fadeUp}
                 custom={2}
-                className="max-w-[520px] mx-auto lg:mx-0 text-lg text-primary-foreground/70"
+                className="max-w-[520px] mx-auto lg:mx-0 text-lg text-primary-foreground/70 whitespace-pre-line"
               >
                 {t('hero.description')}
               </motion.p>
