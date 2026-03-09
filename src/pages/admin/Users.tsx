@@ -4,7 +4,6 @@ import { useState } from "react";
 import api from "@/services/api";
 import { useI18n } from "@/lib/i18n";
 
-
 interface User {
   _id: string;
   firstName: string;
@@ -13,6 +12,8 @@ interface User {
   role: string;
   isActive?: boolean;
 }
+
+const SUPER_ADMIN_EMAIL = "kamolovmuhsin@icloud.com";
 
 export default function Users() {
   const { t } = useI18n();
@@ -102,80 +103,109 @@ export default function Users() {
         <div className="overflow-x-auto">
           <table className="min-w-[800px] w-full text-left text-sm">
 
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="px-4 py-3">{t('admin.users.name')}</th>
-              <th className="px-4 py-3">{t('admin.users.email')}</th>
-              <th className="px-4 py-3">{t('admin.users.role')}</th>
-              <th className="px-4 py-3">{t('admin.users.status')}</th>
-              <th className="px-4 py-3">{t('admin.users.actions')}</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredUsers.map((user) => (
-              <tr key={user._id} className="border-b">
-
-                <td className="px-4 py-3 font-medium">
-                  {user.firstName} {user.lastName}
-                </td>
-
-                <td className="px-4 py-3 text-gray-600">
-                  {user.email}
-                </td>
-
-                <td className="px-4 py-3">
-                  <select
-                    value={user.role}
-                    disabled={changeRole.isPending}
-                    onChange={(e) =>
-                      changeRole.mutate({
-                        id: user._id,
-                        role: e.target.value
-                      })
-                    }
-                    className="border rounded px-3 py-1"
-                  >
-                    <option value="participant">{t('admin.users.participant')}</option>
-                    <option value="jury">{t('admin.users.jury')}</option>
-                    <option value="admin">{t('admin.users.admin')}</option>
-                  </select>
-                </td>
-
-                <td className="px-4 py-3">
-                  {user.isActive !== false ? (
-                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
-                      {t('admin.users.active')}
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">
-                      {t('admin.users.disabled')}
-                    </span>
-                  )}
-                </td>
-
-                <td className="px-4 py-3">
-                  <button
-                    disabled={toggleActive.isPending}
-                    onClick={() =>
-                      toggleActive.mutate({
-                        id: user._id,
-                        isActive: !(user.isActive !== false)
-                      })
-                    }
-                    className="px-3 py-1 text-sm border rounded-md"
-                  >
-                    {user.isActive !== false
-                      ? t('admin.users.deactivate')
-                      : t('admin.users.activate')}
-                  </button>
-                </td>
-
+            <thead className="bg-gray-50 border-b">
+              <tr>
+                <th className="px-4 py-3">{t('admin.users.name')}</th>
+                <th className="px-4 py-3">{t('admin.users.email')}</th>
+                <th className="px-4 py-3">{t('admin.users.role')}</th>
+                <th className="px-4 py-3">{t('admin.users.status')}</th>
+                <th className="px-4 py-3">{t('admin.users.actions')}</th>
               </tr>
-            ))}
-          </tbody>
+            </thead>
 
-        </table>
+            <tbody>
+              {filteredUsers.map((user) => {
+
+                const isSuperAdmin =
+                  user.email.toLowerCase() === SUPER_ADMIN_EMAIL;
+
+                return (
+                  <tr key={user._id} className="border-b">
+
+                    <td className="px-4 py-3 font-medium">
+                      {user.firstName} {user.lastName}
+                    </td>
+
+                    <td className="px-4 py-3 text-gray-600">
+                      {user.email}
+                    </td>
+
+                    {/* ROLE */}
+                    <td className="px-4 py-3">
+
+                      {isSuperAdmin ? (
+                        <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-md text-sm">
+                          Суперадмин
+                        </span>
+                      ) : (
+                        <select
+                          value={user.role}
+                          disabled={changeRole.isPending}
+                          onChange={(e) =>
+                            changeRole.mutate({
+                              id: user._id,
+                              role: e.target.value
+                            })
+                          }
+                          className="border rounded px-3 py-1"
+                        >
+                          <option value="participant">
+                            {t('admin.users.participant')}
+                          </option>
+                          <option value="jury">
+                            {t('admin.users.jury')}
+                          </option>
+                          <option value="admin">
+                            {t('admin.users.admin')}
+                          </option>
+                        </select>
+                      )}
+
+                    </td>
+
+                    {/* STATUS */}
+                    <td className="px-4 py-3">
+                      {user.isActive !== false ? (
+                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+                          {t('admin.users.active')}
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">
+                          {t('admin.users.disabled')}
+                        </span>
+                      )}
+                    </td>
+
+                    {/* ACTIONS */}
+                    <td className="px-4 py-3">
+                      <button
+                        disabled={
+                          toggleActive.isPending || isSuperAdmin
+                        }
+                        onClick={() =>
+                          toggleActive.mutate({
+                            id: user._id,
+                            isActive: !(user.isActive !== false)
+                          })
+                        }
+                        className={`px-3 py-1 text-sm border rounded-md ${
+                          isSuperAdmin
+                            ? "opacity-40 cursor-not-allowed"
+                            : ""
+                        }`}
+                      >
+                        {user.isActive !== false
+                          ? t('admin.users.deactivate')
+                          : t('admin.users.activate')}
+                      </button>
+                    </td>
+
+                  </tr>
+                );
+              })}
+            </tbody>
+
+          </table>
         </div>
       </div>
 
