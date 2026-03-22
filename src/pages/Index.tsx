@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
 import { motion } from 'framer-motion';
-import { Calendar, Globe, Users, Award, Palette, Clock } from 'lucide-react';
+import { Calendar, Globe, Users, Award, Palette, Clock, Paintbrush, Amphora, BookOpen, Monitor, PenTool, Building2, Shirt } from 'lucide-react';
 import heroBg from '@/assets/hero-bg.webp';
 import heroBgMobile from '@/assets/herobg-mobile.webp';
 
@@ -25,13 +25,13 @@ const Index = () => {
   ];
 
   const nominations = [
-    { key: '1', icon: '🎨' },
-    { key: '2', icon: '🏺' },
-    { key: '3', icon: '📖' },
-    { key: '4', icon: '💻' },
-    { key: '5', icon: '✏️' },
-    { key: '6', icon: '🏛️' },
-    { key: '7', icon: '👗' },
+    { key: '1', icon: Paintbrush },
+    { key: '2', icon: Amphora },
+    { key: '3', icon: BookOpen },
+    { key: '4', icon: Monitor },
+    { key: '5', icon: PenTool },
+    { key: '6', icon: Building2 },
+    { key: '7', icon: Shirt },
   ];
 
   return (
@@ -274,9 +274,7 @@ const Index = () => {
                   className="group block rounded-xl border border-primary-foreground/10 bg-primary-foreground/5 p-6 transition-all hover:border-gold/30 hover:bg-primary-foreground/10"
                 >
 
-                  <span className="mb-3 block text-2xl">
-                    {nom.icon}
-                  </span>
+                  <nom.icon className="mb-3 h-8 w-8 text-gold" />
 
                   <h3 className="font-display text-sm font-semibold leading-snug group-hover:text-gold transition-colors">
                     {t(`nom.${nom.key}.title` as any)}

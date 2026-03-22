@@ -8,6 +8,7 @@ import { I18nProvider } from "@/lib/i18n";
 
 import Layout from "@/components/Layout";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import ScrollToTop from "@/components/ScrollToTop";
 
 import { AuthProvider } from "@/context/AuthContext";
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -54,6 +55,7 @@ const App = () => (
           <Sonner />
 
           <BrowserRouter>
+            <ScrollToTop />
             <Routes>
 
               {/* ============================
