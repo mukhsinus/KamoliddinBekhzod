@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "@/services/api";
 import { useI18n } from "@/lib/i18n";
+import ContactMessages from "@/components/admin/ContactMessages";
 
 interface NominationTop {
   nomination: string;
@@ -202,6 +203,12 @@ export default function Dashboard() {
 
         </div>
 
+      </div>
+
+      {/* CONTACT MESSAGES */}
+
+      <div className="bg-white border rounded-2xl p-6">
+        <ContactMessages />
       </div>
 
     </div>

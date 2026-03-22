@@ -1,11 +1,42 @@
 import { useI18n } from '@/lib/i18n';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
+import api from '@/services/api';
 
 const Contacts = () => {
   const { t, lang } = useI18n();
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    console.log('📧 Form submitted:', { name: formState.name, email: formState.email, messageLength: formState.message.length });
+
+    if (!formState.name || !formState.email || !formState.message) {
+      alert(lang === 'ru' ? 'Заполните все поля' : 'Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await api.post('/api/contact', formState);
+      console.log('✅ Message sent successfully:', response.data);
+      setSubmitted(true);
+      setFormState({ name: '', email: '', message: '' });
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (error: any) {
+      console.error('❌ Error submitting contact form:', error);
+      const errorMsg = error?.response?.data?.error || error?.message || 'Unknown error';
+      console.error('Error details:', errorMsg);
+      alert(lang === 'ru' ? `Ошибка: ${errorMsg}` : `Error: ${errorMsg}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const contactInfo = [
     { icon: Mail, label: t('contacts.email'), value: 'info@behzod-competition.org' },
@@ -61,11 +92,24 @@ const Contacts = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="rounded-xl border border-border bg-card p-6 shadow-soft lg:p-8"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit}
           >
             <h3 className="font-display text-lg font-semibold text-foreground mb-6">
               {lang === 'ru' ? 'Напишите нам' : 'Write to us'}
             </h3>
+
+            {submitted && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="mb-6 flex items-center gap-2 rounded-lg bg-green-50 p-3 text-sm text-green-700"
+              >
+                <CheckCircle className="h-5 w-5" />
+                {lang === 'ru' ? 'Спасибо! Ваше сообщение отправлено.' : 'Thank you! Your message has been sent.'}
+              </motion.div>
+            )}
+
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-foreground">
@@ -75,7 +119,8 @@ const Contacts = () => {
                   type="text"
                   value={formState.name}
                   onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                  className="mt-1.5 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+                  disabled={loading}
+                  className="mt-1.5 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold disabled:opacity-50"
                   placeholder={lang === 'ru' ? 'Ваше имя' : 'Your name'}
                 />
               </div>
@@ -87,7 +132,8 @@ const Contacts = () => {
                   type="email"
                   value={formState.email}
                   onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                  className="mt-1.5 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+                  disabled={loading}
+                  className="mt-1.5 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold disabled:opacity-50"
                   placeholder="email@example.com"
                 />
               </div>
@@ -98,17 +144,19 @@ const Contacts = () => {
                 <textarea
                   value={formState.message}
                   onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                  disabled={loading}
                   rows={4}
-                  className="mt-1.5 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold resize-none"
+                  className="mt-1.5 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold resize-none disabled:opacity-50"
                   placeholder={lang === 'ru' ? 'Ваше сообщение...' : 'Your message...'}
                 />
               </div>
               <button
                 type="submit"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:opacity-90"
+                disabled={loading}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 disabled:opacity-50"
               >
                 <Send className="h-4 w-4" />
-                {t('common.submit')}
+                {loading ? (lang === 'ru' ? 'Отправка...' : 'Sending...') : t('common.submit')}
               </button>
             </div>
           </motion.form>

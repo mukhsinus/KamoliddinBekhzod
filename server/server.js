@@ -72,6 +72,7 @@ const submissionRoutes = require('./routes/submissionRoutes');
 const nominationRoutes = require('./routes/nominations');
 const diplomaRoutes = require('./routes/diplomaRoutes');
 const juryRoutes = require('./routes/juryRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/evaluations', evaluationRoutes);
@@ -83,6 +84,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/nominations', nominationRoutes);
 app.use('/api/diplomas', diplomaRoutes);
+app.use('/api/contact', contactRoutes);
 
 /* JURY PANEL ROUTES */
 
